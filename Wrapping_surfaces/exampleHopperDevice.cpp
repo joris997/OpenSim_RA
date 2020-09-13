@@ -39,7 +39,9 @@ From there, you will be directed to specific files and methods in this project
 that need to be completed. Now, hop to it! */
 
 #include <OpenSim/OpenSim.h>
-#include <time.h>
+#include <ctime>
+#include <vector>
+#include <fstream>
 
 static const double REPORTING_INTERVAL{ 0.2 };
 static const double FINAL_TIME{ 5.0 };
@@ -111,10 +113,18 @@ int main(int argc, char* argv[]) {
 void run(bool showVisualizer, double finalTime)
 {
     using namespace OpenSim;
-    showVisualizer = false;
+    showVisualizer = true;
 //        std::string wrap_surfaces[4] = {"cylinder", "ellipsoid", "sphere", "torus"};
-    std::string wrap_surfaces[1] = {"cylinder"};
-    for (auto patella_shape : wrap_surfaces){
+    std::string wrap_surfaces[1] = {"ellipsoid"};
+    int n_surfaces = sizeof(wrap_surfaces)/sizeof(wrap_surfaces[0]);
+    // create an array of vectors containing the time of each run for each wrapping surface
+    std::vector<double> results[n_surfaces];
+    // create an array of doubles containing the average time for each wrapping surface
+    float avg_results[n_surfaces];
+
+    // loop through each wrapping surface
+    for (int i=0; i<n_surfaces; i++){
+        auto patella_shape = wrap_surfaces[i];
         auto hopper = buildHopper(showVisualizer,patella_shape);
 
 //            hopper.printSubcomponentInfo();
@@ -122,8 +132,9 @@ void run(bool showVisualizer, double finalTime)
 //            hopper.getComponent("/bodyset/thigh").printOutputInfo(false);
 //            addConsoleReporterToHopper(hopper);
 
+        int sim_num = 2;
         // TIMING PROGRAM EXECUTION TIME
-        for (int ii=1; ii<6; ii++){
+        for (int ii=1; ii<sim_num; ii++){
             SimTK::State& sHop = hopper.initSystem();
             clock_t time = clock();
             simulate(hopper, sHop, finalTime);
@@ -131,8 +142,15 @@ void run(bool showVisualizer, double finalTime)
             std::cout << patella_shape << " execution time [" << ii << "]: " <<
                       time << " clicks, " <<
                       (float)time/CLOCKS_PER_SEC << " seconds" << std::endl;
+            results[i].push_back(time);
+            avg_results[i] += (float)time/CLOCKS_PER_SEC;
         }
+        avg_results[i] = avg_results[i]/(float)(sim_num-1);
+    }
 
+    // WRITING RESULTS TO CONSOLE
+    for (int i=0; i<n_surfaces; i++){
+        std::cout << "Avg time " << wrap_surfaces[i] << "\t" << avg_results[i] << "\n";
     }
 
 };
