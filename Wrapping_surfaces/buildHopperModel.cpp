@@ -166,7 +166,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
     else if (patella_shape == "ellipsoid"){
         delete patella;
         auto patella = new WrapEllipsoid();
-        patella->set_dimensions(Vec3(0.08,0.08,0.2));
+        patella->set_dimensions(Vec3(0.08,0.08,2));
         patella->set_quadrant("x");
     }
     else if (patella_shape == "sphere"){
@@ -178,7 +178,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
     else if (patella_shape == "torus"){
         delete patella;
         auto patella = new WrapTorus();
-        patella->set_inner_radius(0.4);
+        patella->set_inner_radius(0.2);
         patella->set_outer_radius(0.8);
         patella->set_quadrant("x");
     }
