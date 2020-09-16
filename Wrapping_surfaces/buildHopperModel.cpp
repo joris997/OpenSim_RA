@@ -35,10 +35,7 @@ an assistive device (to help the hopper hop higher); their absolute path names
 are:
 
     - on the thigh: "/Dennis/bodyset/thigh/deviceAttachmentPoint"
-    - on the shank: "/Dennis/bodyset/shank/deviceAttachmentPoint"
-
-You don't need to add anything in this file, but you should know what
-buildHopper() is doing. */
+    - on the shank: "/Dennis/bodyset/shank/deviceAttachmentPoint"*/
 
 #include <OpenSim/OpenSim.h>
 
@@ -147,49 +144,71 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
     auto vastus = new Thelen2003Muscle("vastus", mclFmax, mclOptFibLen,
                                        mclTendonSlackLen, mclPennAng);
     vastus->addNewPathPoint("origin", *thigh, Vec3(linkRadius, 0.1, 0));
+
+    //TODO: HERE STARTS CODE ON USING VIA POINTS
+    if (patella_shape == "points") {
+        auto center_point = Vec3(0,-linkLength/2,0);
+        double r = 0.08;    // radius of 'virtual' disk
+        double p = 0;       // initial angle around which the disk will be build
+        for (int i=0; i<6; i++){
+            std::string name = "sub"+std::to_string(i);
+            vastus->addNewPathPoint(name, *thigh, center_point + Vec3(r*cos(p),r*sin(p),0));
+            p -= 0.5;       // increment the angle to incrementally create the disk
+        }
+    }
     vastus->addNewPathPoint("insertion", *shank, Vec3(linkRadius, 0.15, 0));
     hopper.addForce(vastus);
 
-    // Attach a patella to the distal end of the thigh over which the
-    // vastus muscle can wrap. 
-    auto patellaFrame = new PhysicalOffsetFrame("patellaFrame",
-        *thigh, SimTK::Transform(linkDistalPoint));
-
-    auto patella = new WrapCylinder();
-    if (patella_shape == "cylinder"){
-        delete patella;
+    //TODO: HERE STARTS CODE ON DIFFERENT WRAPPING SURFACES
+    if (patella_shape != "points" && patella_shape != "blank") {
+        // Attach a patella to the distal end of the thigh over which the
+        // vastus muscle can wrap.
+        auto patellaFrame = new PhysicalOffsetFrame("patellaFrame",*thigh, SimTK::Transform(linkDistalPoint));
+        // create an empty patella before the 'if' statement declarations
         auto patella = new WrapCylinder();
-        patella->set_radius(0.08);
-        patella->set_length(linkRadius*2.);
-        patella->set_quadrant("x");
-    }
-    else if (patella_shape == "ellipsoid"){
-        delete patella;
-        auto patella = new WrapEllipsoid();
-        patella->set_dimensions(Vec3(0.08,0.08,2));
-        patella->set_quadrant("x");
-    }
-    else if (patella_shape == "sphere"){
-        delete patella;
-        auto patella = new WrapSphere();
-        patella->set_radius(0.08);
-        patella->set_quadrant("x");
-    }
-    else if (patella_shape == "torus"){
-        delete patella;
-        auto patella = new WrapTorus();
-        patella->set_inner_radius(0.2);
-        patella->set_outer_radius(0.8);
-        patella->set_quadrant("x");
-    }
-    patella->setName("patella");
-    std::cout << "Patella is a " << patella->getWrapTypeName() << std::endl;
 
-    patellaFrame->addWrapObject(patella);
-    thigh->addComponent(patellaFrame);
+        if (patella_shape == "cylinder") {
+            delete patella;
+            auto patella = new WrapCylinder();
+            patella->setAllPropertiesUseDefault(true);
+            patella->set_radius(0.08);
+            patella->set_length(linkRadius * 2.);
+            patella->set_quadrant("+x");
+            // even a significant rotation of the cylinder does not lead to the vastus slipping from the surface.
+            //        patella->set_xyz_body_rotation(Vec3(0,0.5,0));
+        } else if (patella_shape == "ellipsoid") {
+            delete patella;
+            auto patella = new WrapEllipsoid();
+            patella->setAllPropertiesUseDefault(true);
+            // a significant e2 size of the ellipsoid still leads to the vastus going through the wrapping surface
+            // although this is physically not possible
+            patella->set_dimensions(Vec3(0.08, 0.08, 1));
+            patella->set_quadrant("+x");
+        } else if (patella_shape == "sphere") {
+            delete patella;
+            auto patella = new WrapSphere();
+            patella->setAllPropertiesUseDefault(true);
+            patella->set_radius(0.08);
+            patella->set_quadrant("+x");
+        } else if (patella_shape == "torus") {
+            delete patella;
+            auto patella = new WrapTorus();
+            patella->setAllPropertiesUseDefault(true);
+            patella->set_inner_radius(0.02);
+            patella->set_outer_radius(0.08);
+            patella->set_quadrant("+x");
+            patella->set_active(true);
+        }
 
-    // Configure the vastus muscle to wrap over the patella.
-    vastus->updGeometryPath().addPathWrap(*patella);
+        patella->setName("patella");
+        std::cout << "Patella is a " << patella->getWrapTypeName() << std::endl;
+
+        patellaFrame->addWrapObject(patella);
+        thigh->addComponent(patellaFrame);
+
+        // Configure the vastus muscle to wrap over the patella.
+        vastus->updGeometryPath().addPathWrap(*patella);
+    }
 
     // Create a controller to excite the vastus muscle.
     auto brain = new PrescribedController();

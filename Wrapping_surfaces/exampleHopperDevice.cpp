@@ -27,16 +27,7 @@
 /* This example demonstrates some of the new features of the OpenSim 4.0 API.
 The Component architecture allows us to join sub-assemblies to form larger
 Models, with information flowing between Components via Inputs, Outputs, and
-Sockets. For more information, please refer to the Component documentation.
-
-This interactive example consists of three steps:
-  Step 1. Build and simulate a single-legged hopping mechanism.
-  Step 2. Build an assistive device and test it on a simple testbed.
-  Step 3. Connect the device to the hopper to increase hop height.
-
-To start working through this example, go to run() at the bottom of this file.
-From there, you will be directed to specific files and methods in this project
-that need to be completed. Now, hop to it! */
+Sockets. For more information, please refer to the Component documentation.*/
 
 #include <OpenSim/OpenSim.h>
 #include <ctime>
@@ -113,9 +104,12 @@ int main(int argc, char* argv[]) {
 void run(bool showVisualizer, double finalTime)
 {
     using namespace OpenSim;
+    // overwrite visualizer boolean for debugging
     showVisualizer = true;
-//        std::string wrap_surfaces[4] = {"cylinder", "ellipsoid", "sphere", "torus"};
-    std::string wrap_surfaces[1] = {"ellipsoid"};
+    std::string wrap_surfaces[1] = {"cylinder"};
+//    std::string wrap_surfaces[4] = {"cylinder", "ellipsoid", "sphere", "torus"};
+//    std::string wrap_surfaces[6] = {"cylinder", "ellipsoid", "sphere", "torus", "points","blank"};
+
     int n_surfaces = sizeof(wrap_surfaces)/sizeof(wrap_surfaces[0]);
     // create an array of vectors containing the time of each run for each wrapping surface
     std::vector<double> results[n_surfaces];
@@ -124,18 +118,20 @@ void run(bool showVisualizer, double finalTime)
 
     // loop through each wrapping surface
     for (int i=0; i<n_surfaces; i++){
+        // somehow have to set this manually to 0.0, otherwise infinitely large init values
+        avg_results[i] = 0.0;
+        // build the hopper with the right patella shape
         auto patella_shape = wrap_surfaces[i];
         auto hopper = buildHopper(showVisualizer,patella_shape);
+        // and save as an .osim file
+        hopper.finalizeConnections();
+        hopper.print("Hopper.osim");
 
-//            hopper.printSubcomponentInfo();
-//            hopper.printSubcomponentInfo<Joint>();
-//            hopper.getComponent("/bodyset/thigh").printOutputInfo(false);
-//            addConsoleReporterToHopper(hopper);
-
-        int sim_num = 2;
-        // TIMING PROGRAM EXECUTION TIME
-        for (int ii=1; ii<sim_num; ii++){
+        // number of simulations run per patella shape
+        int sim_num = 1;
+        for (int ii=1; ii<sim_num+1; ii++){
             SimTK::State& sHop = hopper.initSystem();
+            // time the simulation time of each patella shape
             clock_t time = clock();
             simulate(hopper, sHop, finalTime);
             time = clock() - time;
@@ -145,12 +141,17 @@ void run(bool showVisualizer, double finalTime)
             results[i].push_back(time);
             avg_results[i] += (float)time/CLOCKS_PER_SEC;
         }
-        avg_results[i] = avg_results[i]/(float)(sim_num-1);
+        // obtain the average simulation time for each patella shape
+        avg_results[i] = avg_results[i]/(float)(sim_num);
     }
 
-    // WRITING RESULTS TO CONSOLE
+    // writing the results to the console as a summary
     for (int i=0; i<n_surfaces; i++){
         std::cout << "Avg time " << wrap_surfaces[i] << "\t" << avg_results[i] << "\n";
     }
-
 };
+
+//            hopper.printSubcomponentInfo();
+//            hopper.printSubcomponentInfo<Joint>();
+//            hopper.getComponent("/bodyset/thigh").printOutputInfo(false);
+//            addConsoleReporterToHopper(hopper);
