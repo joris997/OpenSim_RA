@@ -145,7 +145,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
                                        mclTendonSlackLen, mclPennAng);
     vastus->addNewPathPoint("origin", *thigh, Vec3(linkRadius, 0.1, 0));
 
-    //TODO: HERE STARTS CODE ON USING VIA POINTS
+    //HERE STARTS CODE ON USING VIA POINTS
     if (patella_shape == "points") {
         auto center_point = Vec3(0,-linkLength/2,0);
         double r = 0.08;    // radius of 'virtual' disk
@@ -159,11 +159,12 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
     vastus->addNewPathPoint("insertion", *shank, Vec3(linkRadius, 0.15, 0));
     hopper.addForce(vastus);
 
-    //TODO: HERE STARTS CODE ON DIFFERENT WRAPPING SURFACES
+    //HERE STARTS CODE ON DIFFERENT WRAPPING SURFACES
     if (patella_shape != "points" && patella_shape != "blank") {
         // Attach a patella to the distal end of the thigh over which the
         // vastus muscle can wrap.
         auto patellaFrame = new PhysicalOffsetFrame("patellaFrame",*thigh, SimTK::Transform(linkDistalPoint));
+        auto patellaFrame2 = new PhysicalOffsetFrame("patellaFrame2",*shank,SimTK::Transform(-linkDistalPoint));
         // create an empty patella before the 'if' statement declarations
         auto patella = new WrapCylinder();
 
@@ -203,8 +204,8 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
         patella->setName("patella");
         std::cout << "Patella is a " << patella->getWrapTypeName() << std::endl;
 
-        patellaFrame->addWrapObject(patella);
-        thigh->addComponent(patellaFrame);
+        patellaFrame2->addWrapObject(patella);
+        thigh->addComponent(patellaFrame2);
 
         // Configure the vastus muscle to wrap over the patella.
         vastus->updGeometryPath().addPathWrap(*patella);

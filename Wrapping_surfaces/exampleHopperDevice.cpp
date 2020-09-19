@@ -48,10 +48,6 @@ namespace OpenSim {
 // Forward declarations for methods used below.
     Model buildHopper(bool showVisualizer, const std::string& patella_shape);    //defined in buildHopperModel.cpp
 
-//------------------------------------------------------------------------------
-// Add a ConsoleReporter to the hopper model to display variables of interest.
-// [Step 1, Task B]
-//------------------------------------------------------------------------------
     void addConsoleReporterToHopper(Model& hopper)
     {
         // Create a new ConsoleReporter. Set its name and reporting interval.
@@ -127,6 +123,7 @@ void run(bool showVisualizer, double finalTime)
         hopper.finalizeConnections();
         hopper.print("Hopper.osim");
 
+        addConsoleReporterToHopper(hopper);
         // number of simulations run per patella shape
         int sim_num = 1;
         for (int ii=1; ii<sim_num+1; ii++){
@@ -144,7 +141,7 @@ void run(bool showVisualizer, double finalTime)
         // obtain the average simulation time for each patella shape
         avg_results[i] = avg_results[i]/(float)(sim_num);
     }
-
+    auto tool = AnalyzeTool();
     // writing the results to the console as a summary
     for (int i=0; i<n_surfaces; i++){
         std::cout << "Avg time " << wrap_surfaces[i] << "\t" << avg_results[i] << "\n";
