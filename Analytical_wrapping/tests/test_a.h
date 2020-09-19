@@ -6,6 +6,7 @@
 #define ANALYTICAL_WRAPPING_MODELPARAMETERS_H
 
 // General parameters
+static const bool   SHOW_VISUALIZER{ true };
 static const double REPORTING_INTERVAL{ 0.2 };
 static const double FINAL_TIME{ 5.0 };
 

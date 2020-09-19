@@ -19,49 +19,22 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/OpenSim.h>
-#include "modelParameters.h"
+#include "tests/test_a.h"
+#include "analyticalSolution.h"
 #include <ctime>
 #include <vector>
 #include <fstream>
 
-namespace OpenSim {
-    Model buildWrappingModel(bool showVisualizer);
-}
+static const std::string sliderLPath{"/jointset/sliderLeft/yCoordSliderLeft"};
+static const std::string sliderRPath{"/jointset/sliderRight/yCoordSliderRight"};
 
-void run(bool showVisualizer, double finalTime);
+using namespace OpenSim;
+using namespace SimTK;
+using OpenSim::Exception;
 
-int main(int argc, char* argv[]) {
-    bool showVisualizer{false};
+Model buildWrappingModel(bool showVisualizer);
 
-    try {
-        run(showVisualizer, FINAL_TIME);
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Run FAILED due to: " << ex.what() << std::endl;
-        return 1;
-    }
-    return 0;
-}
-
-void run(bool showVisualizer, double finalTime) {
-    using namespace OpenSim;
-
-    auto model = buildWrappingModel(showVisualizer);
-    //model.printSubcomponentInfo();
-    //model.printSubcomponentInfo<Joint>();
-
-    // Add table for results
-    std::string sliderLPath{"/jointset/sliderLeft/yCoordSliderLeft"};
-    std::string sliderRPath{"/jointset/sliderRight/yCoordSliderRight"};
-    auto table = new TableReporter();
-    table->setName("wrapping_results_table");
-    table->set_report_time_interval(REPORTING_INTERVAL);
-    table->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
-    table->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
-    table->addToReport(model.getComponent("/forceset/muscle").getOutput("fiber_length"));
-    table->addToReport(model.getComponent("/forceset/muscle").getOutput("tendon_length"));
-    model.addComponent(table);
-
+void addConsole(Model& model){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
     console->set_report_time_interval(REPORTING_INTERVAL);
@@ -70,6 +43,39 @@ void run(bool showVisualizer, double finalTime) {
     console->addToReport(model.getComponent("/forceset/muscle").getOutput("fiber_length"));
     console->addToReport(model.getComponent("/forceset/muscle").getOutput("tendon_length"));
     model.addComponent(console);
+}
+
+void run(double finalTime);
+
+int main(int argc, char* argv[]) {
+    try {
+        run(FINAL_TIME);
+    }
+    catch (const std::exception& ex) {
+        std::cout << "Run FAILED due to: " << ex.what() << std::endl;
+        return 1;
+    }
+    return 0;
+}
+
+void run(double finalTime) {
+    using namespace OpenSim;
+
+    auto model = buildWrappingModel(SHOW_VISUALIZER);
+    //model.printSubcomponentInfo();
+    //model.printSubcomponentInfo<Joint>();
+
+    // Add console for results
+    addConsole(model);
+    // Add table for result processing
+    auto table = new TableReporter();
+    table->setName("wrapping_results_table");
+    table->set_report_time_interval(REPORTING_INTERVAL);
+    table->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
+    table->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
+    table->addToReport(model.getComponent("/forceset/muscle").getOutput("fiber_length"));
+    table->addToReport(model.getComponent("/forceset/muscle").getOutput("tendon_length"));
+    model.addComponent(table);
 
     SimTK::State& x0 = model.initSystem();
     // time the simulation
@@ -80,7 +86,7 @@ void run(bool showVisualizer, double finalTime) {
                  time << " clicks, " <<
                  (float)time/CLOCKS_PER_SEC << " seconds (sim time = " << finalTime << " seconds)" << std::endl;
 
-    // analyze results
+    // unpack the table to analyze the results
     const auto headings = table->getTable().getColumnLabels();
     const auto leftHeight = table->getTable().getDependentColumnAtIndex(0);
     const auto rightHeight = table->getTable().getDependentColumnAtIndex(1);
@@ -89,37 +95,10 @@ void run(bool showVisualizer, double finalTime) {
 
     bool testPass = true;
     for (int i=0; i<FINAL_TIME/REPORTING_INTERVAL; i++){
-        double lNumerical = (double) fiberLength[i] + tendonLength[i];
-        double s = BODY_SIZE;
-        double r = CYLINDER_RADIUS;
-        double x = BODY_OFFSET;
-        double h = CYLINDER_HEIGHT;
+        double lNumerical  = fiberLength[i] + tendonLength[i];
+        double lAnalytical = analyticalSolution(leftHeight[i]);
 
-        double lAnalytical, lCylinder;
-        if (rightHeight[i]+s/2 >= h+r) {
-            lAnalytical = 2*x;
-        }
-        else {
-            double hD = h - (leftHeight[i] + s / 2);
-            // distance center cylinder and connection point
-            double d = sqrt(pow(x, 2) + pow(hD, 2));
-            // length from muscle connection point to tangent circle
-            double lTangent = sqrt(pow(d, 2) - pow(r, 2));
-            // angle connection point to horizontal
-            double beta = atan(r / lTangent) + atan(hD / x);
-            // height of extension of connection point to tangent circle (h + small part)
-            double H = tan(beta) * x;
-            // center of cylinder, horizontal line until it touches muscle
-            double y = ((H - hD) / H) * x;
-            // angle horizontal and perpendicular to tangent to circle
-            double theta = acos(r / y);
-            // length over cylinder part
-            lCylinder = (SimTK::Pi - 2 * theta) * r;
-            // total analytical length
-            lAnalytical = 2 * lTangent + lCylinder;
-        }
-
-        double margin = 0.01;
+        double margin = 0.01;   // 1% margin allowed
         if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
             testPass = false;
             std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;

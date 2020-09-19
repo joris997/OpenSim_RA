@@ -5,13 +5,15 @@ project(Analytical_wrapping)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # DEFINE HERE THE LOCATION OF YOUR OPENSIM-CORE INSTALLATION!!!
+#set(CMAKE_MODULE_PATH /home/none/opensim-core/lib/cmake)
 set(OpenSim_DIR "/home/none/opensim-core/lib/cmake/OpenSim")
 find_package(OpenSim REQUIRED)
 
 
 add_executable(test_suite
-    test_suite.cpp
-    buildModel.cpp)
+        test_suite.cpp
+        buildModel.cpp
+        analyticalSolution.cpp)
 target_link_libraries(test_suite ${Simbody_LIBRARIES} osimTools)
 set_target_properties(test_suite PROPERTIES FOLDER "Examples")
 add_test(NAME    test_suite
