@@ -19,7 +19,7 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/OpenSim.h>
-#include "tests/test_a.h"
+#include "testCase.h"
 #include "analyticalSolution.h"
 #include <ctime>
 #include <vector>
@@ -32,12 +32,12 @@ using namespace OpenSim;
 using namespace SimTK;
 using OpenSim::Exception;
 
-Model buildWrappingModel(bool showVisualizer);
+Model buildWrappingModel(bool showVisualizer, const testCase& tc);
 
-void addConsole(Model& model){
+void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
-    console->set_report_time_interval(REPORTING_INTERVAL);
+    console->set_report_time_interval(tc.REPORTING_INTERVAL);
     console->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
     console->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
     console->addToReport(model.getComponent("/forceset/muscle").getOutput("fiber_length"));
@@ -45,32 +45,38 @@ void addConsole(Model& model){
     model.addComponent(console);
 }
 
-void run(double finalTime);
+void test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
-    try {
-        run(FINAL_TIME);
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Run FAILED due to: " << ex.what() << std::endl;
-        return 1;
+    // Create test cases;
+    testCase a;
+    testCase b;
+    // Run each test case
+    for (testCase const& tc: {a}) {
+        try {
+            test(tc);
+        }
+        catch (const std::exception& ex) {
+            std::cout << "Run FAILED due to: " << ex.what() << std::endl;
+            return 1;
+        }
     }
     return 0;
 }
 
-void run(double finalTime) {
+void test(const testCase& tc) {
     using namespace OpenSim;
 
-    auto model = buildWrappingModel(SHOW_VISUALIZER);
+    auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
     //model.printSubcomponentInfo();
     //model.printSubcomponentInfo<Joint>();
 
     // Add console for results
-    addConsole(model);
+    addConsole(model, tc);
     // Add table for result processing
     auto table = new TableReporter();
     table->setName("wrapping_results_table");
-    table->set_report_time_interval(REPORTING_INTERVAL);
+    table->set_report_time_interval(tc.REPORTING_INTERVAL);
     table->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
     table->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
     table->addToReport(model.getComponent("/forceset/muscle").getOutput("fiber_length"));
@@ -80,11 +86,11 @@ void run(double finalTime) {
     SimTK::State& x0 = model.initSystem();
     // time the simulation
     clock_t time = clock();
-    simulate(model, x0, finalTime,true);
+    simulate(model, x0, tc.FINAL_TIME,true);
     time = clock() - time;
     std::cout << "Execution time: " <<
                  time << " clicks, " <<
-                 (float)time/CLOCKS_PER_SEC << " seconds (sim time = " << finalTime << " seconds)" << std::endl;
+                 (float)time/CLOCKS_PER_SEC << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
     // unpack the table to analyze the results
     const auto headings = table->getTable().getColumnLabels();
@@ -94,9 +100,9 @@ void run(double finalTime) {
     const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
 
     bool testPass = true;
-    for (int i=0; i<FINAL_TIME/REPORTING_INTERVAL; i++){
+    for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
         double lNumerical  = fiberLength[i] + tendonLength[i];
-        double lAnalytical = analyticalSolution(leftHeight[i]);
+        double lAnalytical = analyticalSolution(leftHeight[i], tc);
 
         double margin = 0.01;   // 1% margin allowed
         if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {

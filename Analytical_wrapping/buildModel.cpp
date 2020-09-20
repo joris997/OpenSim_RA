@@ -19,11 +19,11 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/OpenSim.h>
-#include "tests/test_a.h"
+#include "testCase.h"
 
 using namespace OpenSim;
 
-Model buildWrappingModel(bool showVisualizer) {
+Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
     using SimTK::Vec3;
     using SimTK::Inertia;
 
@@ -34,7 +34,7 @@ Model buildWrappingModel(bool showVisualizer) {
 
     // Create the two vertical bodies
     double bodyMass = 30.0;
-    double bodySideLength = BODY_SIZE;
+    double bodySideLength = tc.BODY_SIZE;
     auto bodyInertia = bodyMass * Inertia::brick(Vec3(bodySideLength / 2.));
     auto bodyLeft = new Body("bodyLeft", bodyMass, Vec3(0), bodyInertia);
     auto bodyRight = new Body("bodyRight", bodyMass, Vec3(0), bodyInertia);
@@ -48,7 +48,7 @@ Model buildWrappingModel(bool showVisualizer) {
     // Attach the pelvis to ground with a vertical slider joint, and attach the
     // pelvis, thigh, and shank bodies to each other with pin joints.
     Vec3 sliderOrientation(0, 0, SimTK::Pi / 2.);
-    Vec3 bodyOffset(BODY_OFFSET, 0, 0);
+    Vec3 bodyOffset(tc.BODY_OFFSET, 0, 0);
     auto sliderLeft = new SliderJoint("sliderLeft", model.getGround(), bodyOffset,
                                       sliderOrientation, *bodyLeft, Vec3(0), sliderOrientation);
     auto sliderRight = new SliderJoint("sliderRight", model.getGround(), -bodyOffset,
@@ -89,13 +89,15 @@ Model buildWrappingModel(bool showVisualizer) {
 
     // Create a frame for the wrapping surface
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
-                                                 SimTK::Transform(Vec3(0, CYLINDER_HEIGHT, 0)));
+                                                 SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
     // Add the wrapping surface
+//    auto wrapSurface = new WrapEllipsoid();
     auto wrapSurface = new WrapCylinder();
     wrapSurface->setAllPropertiesUseDefault(true);
-    wrapSurface->set_radius(CYLINDER_RADIUS);
+    wrapSurface->set_radius(tc.CYLINDER_RADIUS);
     wrapSurface->set_length(1);
-    wrapSurface->set_xyz_body_rotation(Vec3(CYLINDER_ROT_X, CYLINDER_ROT_Y, CYLINDER_ROT_Z));
+//    wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
+    wrapSurface->set_xyz_body_rotation(Vec3(tc.CYLINDER_ROT[0], tc.CYLINDER_ROT[1], tc.CYLINDER_ROT[2]));
     wrapSurface->set_quadrant("+y");
 
 

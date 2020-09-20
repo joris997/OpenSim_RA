@@ -19,16 +19,16 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/OpenSim.h>
-#include "tests/test_a.h"
+#include "testCase.h"
 
 using namespace OpenSim;
 
-double analyticalSolution(double leftHeight){
+double analyticalSolution(double leftHeight, const testCase& tc){
     // create shorter notation from the global parameters
-    double s = BODY_SIZE;
-    double r = CYLINDER_RADIUS;
-    double x = BODY_OFFSET;
-    double h = CYLINDER_HEIGHT;
+    double s = tc.BODY_SIZE;
+    double r = tc.CYLINDER_RADIUS;
+    double x = tc.BODY_OFFSET;
+    double h = tc.CYLINDER_HEIGHT;
 
     double lAnalytical, lCylinder;
     if (leftHeight+s/2 >= h+r) {
