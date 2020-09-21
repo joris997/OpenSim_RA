@@ -45,26 +45,48 @@ void addConsole(Model& model, const testCase& tc){
     model.addComponent(console);
 }
 
-void test(const testCase& tc);
+double test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
     // Create test cases;
     testCase a;
     testCase b;
+    testCase c;
+    testCase d;
+    testCase e;
+    testCase f;
+    b.CYLINDER_ROT = Vec3(0.0,0.2,0.0);
+    c.CYLINDER_ROT = Vec3(0.0,0.4,0.0);
+    d.CYLINDER_ROT = Vec3(0.0,0.6,0.0);
+    e.CYLINDER_ROT = Vec3(0.0,0.8,0.0);
+    f.CYLINDER_ROT = Vec3(0.0,1.0,0.0);
+
     // Run each test case
-    for (testCase const& tc: {a}) {
+    testCase tests[6] = {a,b,c,d,e,f};
+    int testCount = sizeof(tests)/sizeof(tests[0]);
+    std::cout << testCount << std::endl;
+    double runTimes[testCount];
+
+    for (int i=0; i<testCount; i++) {
+        int runCount = 6;
         try {
-            test(tc);
+            for (int ii=0; ii<runCount; ii++){
+                runTimes[i] += test(tests[i]);
+            }
         }
         catch (const std::exception& ex) {
             std::cout << "Run FAILED due to: " << ex.what() << std::endl;
             return 1;
         }
+        runTimes[i] = runTimes[i]/((double)runCount+1);
+    }
+    for (int i=0; i<testCount; i++){
+        std::cout << "Average test (" << tests[i].CYLINDER_ROT[1] << "): " << runTimes[i] << std::endl;
     }
     return 0;
 }
 
-void test(const testCase& tc) {
+double test(const testCase& tc) {
     using namespace OpenSim;
 
     auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
@@ -72,7 +94,7 @@ void test(const testCase& tc) {
     //model.printSubcomponentInfo<Joint>();
 
     // Add console for results
-    addConsole(model, tc);
+//    addConsole(model, tc);
     // Add table for result processing
     auto table = new TableReporter();
     table->setName("wrapping_results_table");
@@ -85,12 +107,13 @@ void test(const testCase& tc) {
 
     SimTK::State& x0 = model.initSystem();
     // time the simulation
-    clock_t time = clock();
+    clock_t ticks = clock();
     simulate(model, x0, tc.FINAL_TIME,true);
-    time = clock() - time;
+    ticks = clock() - ticks;
+    double runTime = (float)ticks/CLOCKS_PER_SEC;
     std::cout << "Execution time: " <<
-                 time << " clicks, " <<
-                 (float)time/CLOCKS_PER_SEC << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
+                 ticks << " clicks, " <<
+                 runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
     // unpack the table to analyze the results
     const auto headings = table->getTable().getColumnLabels();
@@ -102,17 +125,18 @@ void test(const testCase& tc) {
     bool testPass = true;
     for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
         double lNumerical  = fiberLength[i] + tendonLength[i];
-        double lAnalytical = analyticalSolution(leftHeight[i], tc);
+        double lAnalytical = analyticalSolution(leftHeight[i], tc, true);
 
-        double margin = 0.01;   // 1% margin allowed
+        double margin = 0.01;   // 0.1% margin allowed
         if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
             testPass = false;
             std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
         }
     }
     if (testPass){
-        std::cout << "Test status: [PASSED]" << std::endl;
+        std::cout << "Test status (" << tc.CYLINDER_ROT[1] << "): [PASSED]" << std::endl;
     } else {
         std::cout << "Test status: [FAILED]" << std::endl;
     }
+    return runTime;
 }

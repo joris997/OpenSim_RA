@@ -81,8 +81,11 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
 
     auto springToLeft = new PointToPointSpring(model.getGround(), Vec3(0),
                                                *bodyLeft, Vec3(0, -bodySideLength / 2, 0), 100, 0.5);
+    springToLeft->setName("springToLeft");
     auto springToRight = new PointToPointSpring(model.getGround(), Vec3(0),
                                                 *bodyRight, Vec3(0, -bodySideLength / 2, 0), 100, 0.5);
+    springToRight->setName("springToRight");
+
     model.addForce(muscle);
     model.addForce(springToLeft);
     model.addForce(springToRight);
@@ -102,7 +105,7 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
 
 
     wrapSurface->setName("wrapSurface");
-    std::cout << "Wrapping surface is a " << wrapSurface->getWrapTypeName() << std::endl;
+//    std::cout << "Wrapping surface is a " << wrapSurface->getWrapTypeName() << std::endl;
 
     wrappingFrame->addWrapObject(wrapSurface);
     bodyGround->addComponent(wrappingFrame);
