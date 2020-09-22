@@ -1,5 +1,12 @@
 # OpenSim_RA
+
 OpenSim model repository for models that I use for my tasks as research assistent
+
+## Building (Debian/Ubuntu)
+
+```bash
+./scripts/linux_configure && ./scripts/linux_build
+```
 
 ## Wrapping_surfaces
 This is a test on different wrapping surfaces (cylinder, ellipse, sphere, toroid) on the hopper example from the source code.
