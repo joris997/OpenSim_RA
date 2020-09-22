@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+# make bash stricter than normal
+set -ueo pipefail
+
+# because some developers are too lazy to set this every time they checkout :-)
+possible_opensim_locs=(
+    "/home/none/opensim-core/lib/cmake/"
+    "/home/adam/Desktop/opensim-master/opensim-core-install/lib/cmake"
+)
+
+# join bash list by delimiter
+# from: https://stackoverflow.com/questions/1527049/how-can-i-join-elements-of-an-array-in-bash
+function join_by { local d=$1; shift; local f=$1; shift; printf %s "$f" "${@/#/$d}"; }
+
+prefix_dir=$(join_by ";" ${possible_opensim_locs[@]})
+
+# make bash more verbose than normal
+set -x
+
+mkdir -p build/
+cd build/
+cmake -DCMAKE_PREFIX_PATH="${prefix_dir}" ..
