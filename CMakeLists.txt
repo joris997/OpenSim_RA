@@ -8,6 +8,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # subfolder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+# so that CLion/qtcreator can open your project without further
+# configuring
+list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim-core/lib/cmake/")
+
 find_package(OpenSim REQUIRED)
 find_package(Simbody REQUIRED)
 
