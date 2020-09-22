@@ -184,6 +184,16 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
             // a significant e2 size of the ellipsoid still leads to the vastus going through the wrapping surface
             // although this is physically not possible
             patella->set_dimensions(Vec3(0.08, 0.08, 1));
+
+            // | simulation finishes properly + good wrapping
+//            patella->set_xyz_body_rotation(Vec3(0.0,1.0, 0));
+            // | simulation gets stuck
+//            patella->set_xyz_body_rotation(Vec3(0.0,0.5, 0));
+            // | initial wrapping correct but goes through ellipsoid
+//            patella->set_xyz_body_rotation(Vec3(0.5,0,0));
+            // | wrapping appears to hold longer
+//            patella->set_xyz_body_rotation(Vec3(0,0,1.0));
+
             patella->set_quadrant("+x");
         } else if (patella_shape == "sphere") {
             delete patella;
