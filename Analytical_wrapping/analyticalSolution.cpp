@@ -36,11 +36,10 @@ double analyticalSolution(double leftHeight, const testCase& tc, bool useNumeric
     double h = tc.CYLINDER_HEIGHT;
     Vec3 rot = tc.CYLINDER_ROT;
 
-    double lAnalytical, lCylinder;
     // Use the numerical variant for computing the rotated cylinder wrapping length
     if (useNumerical) {
         if (leftHeight+s/2 >= h+r) {
-            lAnalytical = 2*x;
+            return 2*x;
         }
         else {
             // Including rotation
@@ -72,14 +71,14 @@ double analyticalSolution(double leftHeight, const testCase& tc, bool useNumeric
                 k4 = evaluateEquation(a,b,thetaK4);
                 arcLength += (nTheta/6)*(k1+2*k2+2*k3+k4);
             }
-            lAnalytical = 2*arcLength + 2*lTangent;
+            return 2*arcLength + 2*lTangent;
         }
 
     }
     // use the analytical solution only for the non-rotated cylinder!
     else {
         if (leftHeight+s/2 >= h+r) {
-            lAnalytical = 2*x;
+            return 2*x;
         }
         else {
             double hD = h - (leftHeight + s / 2);
@@ -96,10 +95,9 @@ double analyticalSolution(double leftHeight, const testCase& tc, bool useNumeric
             // angle horizontal and perpendicular to tangent to circle
             double theta = acos(r / y);
             // length over cylinder part
-            lCylinder = (SimTK::Pi - 2 * theta) * r;
+            double lCylinder = (SimTK::Pi - 2 * theta) * r;
             // total analytical length
-            lAnalytical = 2 * lTangent + lCylinder;
+            return 2 * lTangent + lCylinder;
         }
     }
-    return lAnalytical;
 }
