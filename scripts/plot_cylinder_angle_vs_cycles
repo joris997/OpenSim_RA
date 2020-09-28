@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import matplotlib
+import pandas
+
+df = pandas.read_csv("results", sep=" ", names=["Cylinder Y angle", "CPU Cycles"])
+
+df.plot(title="CPU overhead of `test_suite` w.r.t. cylinder angle", kind="scatter", x=0, y=1)
+matplotlib.pyplot.show()

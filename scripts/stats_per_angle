@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for ang in $(seq 0.0 0.025 1.0); do
+    perf stat -- ./test_suite $ang 2>&1 1>/dev/null
+done

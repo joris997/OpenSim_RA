@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for m in $(ls | grep "^[0-9]"); do
+    grep "cycles.*GHz" $m | awk '{print $1}' | sed "s/,//g" | sed "s/^/$m /"
+done
