@@ -24,13 +24,16 @@
 #include <ctime>
 #include <vector>
 #include <fstream>
+#include <array>
 
 static const std::string sliderLPath{"/jointset/sliderLeft/yCoordSliderLeft"};
 static const std::string sliderRPath{"/jointset/sliderRight/yCoordSliderRight"};
 
-using namespace OpenSim;
-using namespace SimTK;
 using OpenSim::Exception;
+using OpenSim::Model;
+using OpenSim::ConsoleReporter;
+using SimTK::Vec3;
+using fractional_secs = std::chrono::duration<double, std::ratio<1>>;
 
 Model buildWrappingModel(bool showVisualizer, const testCase& tc);
 
@@ -45,49 +48,8 @@ void addConsole(Model& model, const testCase& tc){
     model.addComponent(console);
 }
 
-double test(const testCase& tc);
-
-int main(int argc, char* argv[]) {
-    // Create test cases;
-    testCase a;
-    testCase b;
-    testCase c;
-    testCase d;
-    testCase e;
-    testCase f;
-    b.CYLINDER_ROT = Vec3(0.0,0.2,0.0);
-    c.CYLINDER_ROT = Vec3(0.0,0.4,0.0);
-    d.CYLINDER_ROT = Vec3(0.0,0.6,0.0);
-    e.CYLINDER_ROT = Vec3(0.0,0.8,0.0);
-    f.CYLINDER_ROT = Vec3(0.0,1.0,0.0);
-
-    // Run each test case
-    testCase tests[6] = {a,b,c,d,e,f};
-    int testCount = sizeof(tests)/sizeof(tests[0]);
-    std::cout << testCount << std::endl;
-    double runTimes[testCount];
-
-    for (int i=0; i<testCount; i++) {
-        int runCount = 6;
-        try {
-            for (int ii=0; ii<runCount; ii++){
-                runTimes[i] += test(tests[i]);
-            }
-        }
-        catch (const std::exception& ex) {
-            std::cout << "Run FAILED due to: " << ex.what() << std::endl;
-            return 1;
-        }
-        runTimes[i] = runTimes[i]/((double)runCount+1);
-    }
-    for (int i=0; i<testCount; i++){
-        std::cout << "Average test (" << tests[i].CYLINDER_ROT[1] << "): " << runTimes[i] << std::endl;
-    }
-    return 0;
-}
-
-double test(const testCase& tc) {
-    using namespace OpenSim;
+fractional_secs test(const testCase& tc) {
+    using OpenSim::TableReporter;
 
     auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
     //model.printSubcomponentInfo();
@@ -106,14 +68,13 @@ double test(const testCase& tc) {
     model.addComponent(table);
 
     SimTK::State& x0 = model.initSystem();
-    // time the simulation
-    clock_t ticks = clock();
-    simulate(model, x0, tc.FINAL_TIME,true);
-    ticks = clock() - ticks;
-    double runTime = (float)ticks/CLOCKS_PER_SEC;
-    std::cout << "Execution time: " <<
-                 ticks << " clicks, " <<
-                 runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
+
+    auto t0 = std::chrono::high_resolution_clock::now();
+    simulate(model, x0, tc.FINAL_TIME, true);
+    auto t1 = std::chrono::high_resolution_clock::now();
+    auto dt = fractional_secs(t1 - t0);
+
+    std::cout << "Execution time: " << dt.count() << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
     // unpack the table to analyze the results
     const auto headings = table->getTable().getColumnLabels();
@@ -133,10 +94,64 @@ double test(const testCase& tc) {
             std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
         }
     }
+
     if (testPass){
         std::cout << "Test status (" << tc.CYLINDER_ROT[1] << "): [PASSED]" << std::endl;
     } else {
         std::cout << "Test status: [FAILED]" << std::endl;
     }
-    return runTime;
+
+    return dt;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc > 1) {
+        // If the caller provides arguments, those arguments are assumed to be
+        // real numbers that represent the cylinder's Y rotation. Test each
+        // rotation in series.
+
+        for (int i = 1; i < argc; ++i) {
+            testCase tc{};
+            double rot = std::stod(argv[i]);
+            std::cerr << argv[0] << ": " << "attempting cylinder rotation of " << rot << " radians " << std::endl;
+            tc.CYLINDER_ROT[1] = rot;
+            test(tc);
+        }
+
+        // do not run the rest of the test suite if the caller provided an arg
+        return 0;
+    }
+
+    // number of repeats for computing the average run-time
+    constexpr size_t runCount = 6;
+
+    // create test cases
+    constexpr size_t numTests = 6;
+    std::array<fractional_secs, numTests> runTimes{};
+    std::array<testCase, numTests> tests{};
+
+    tests[0].CYLINDER_ROT = Vec3(0.0,0.0,0.0);
+    tests[1].CYLINDER_ROT = Vec3(0.0,0.2,0.0);
+    tests[2].CYLINDER_ROT = Vec3(0.0,0.4,0.0);
+    tests[3].CYLINDER_ROT = Vec3(0.0,0.6,0.0);
+    tests[4].CYLINDER_ROT = Vec3(0.0,0.8,0.0);
+    tests[5].CYLINDER_ROT = Vec3(0.0,1.0,0.0);
+
+    std::cout << tests.size() << std::endl;
+
+    // run each test
+    for (size_t i = 0; i < tests.size(); ++i) {
+        fractional_secs rollingAvg{0};
+        for (size_t j = 0; j < runCount; ++j) {
+            fractional_secs t = test(tests[i]);
+            rollingAvg = (j*rollingAvg + t)/(j + 1);
+        }
+        runTimes[i] = rollingAvg;
+    }
+
+    for (size_t i = 0; i < tests.size(); i++) {
+        std::cout << "Average test (" << tests[i].CYLINDER_ROT[1] << "): " << runTimes[i].count() << std::endl;
+    }
+
+    return 0;
 }
