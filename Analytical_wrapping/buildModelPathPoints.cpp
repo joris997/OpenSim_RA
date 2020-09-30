@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- *
- *                     test_suite.cpp                                         *
+ *                     buildModelPathPoints.cpp                               *
  * -------------------------------------------------------------------------- *
  * Test_suite that checks analytical solutions of muscle lengths over         *
  * wrapping surfaces with the numerical solutions of OpenSim. Especially      *
@@ -19,11 +19,13 @@
  * -------------------------------------------------------------------------- */
 
 #include <OpenSim/OpenSim.h>
+#include <OpenSim/Simulation/Model/PathPoint.h>
+#include <OpenSim/Simulation/Model/MovingPathPoint.h>
 #include "testCase.h"
 
 using namespace OpenSim;
 
-Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
+Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     using SimTK::Vec3;
     using SimTK::Inertia;
 
@@ -80,8 +82,6 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
             mclPennAng = 0.;
     auto muscle = new Thelen2003Muscle("muscle", mclFmax, mclOptFibLen,
                                        mclTendonSlackLen, mclPennAng);
-    muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
-    muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
 
     auto springToLeft = new PointToPointSpring(model.getGround(), Vec3(0),
                                                *bodyLeft, Vec3(0, -bodySideLength / 2, 0), 100, 0.5);
@@ -90,32 +90,38 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
                                                 *bodyRight, Vec3(0, -bodySideLength / 2, 0), 100, 0.5);
     springToRight->setName("springToRight");
 
-    model.addForce(muscle);
-    model.addForce(springToLeft);
-    model.addForce(springToRight);
-
 
 
     // WRAPPING SURFACE
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
                                                  SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
-    // Add the wrapping surface
-//    auto wrapSurface = new WrapCylinder();
-    auto wrapSurface = new WrapEllipsoid();
-//    wrapSurface->setAllPropertiesUseDefault(true);
-//    wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-//    wrapSurface->set_length(1);
-    wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
-    wrapSurface->set_xyz_body_rotation(Vec3(tc.CYLINDER_ROT[0], tc.CYLINDER_ROT[1], tc.CYLINDER_ROT[2]));
-    wrapSurface->set_quadrant("+y");
-
-
-    wrapSurface->setName("wrapSurface");
-    wrappingFrame->addWrapObject(wrapSurface);
     bodyGround->addComponent(wrappingFrame);
+    // Add the wrapping surface
+    muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
+    auto center_point = Vec3(0,0,0);
+    double r = tc.CYLINDER_RADIUS;
+    double p0 = SimTK::Pi/4;
+    double pe = 3*SimTK::Pi/4;
+    int nPoints = 6;
+    double increment = (pe-p0)/(nPoints);
+    for (int i=0; i<nPoints+1; i++) {
+        std::string name = "sub" + std::to_string(i);
+        muscle->addNewPathPoint(name, *wrappingFrame, center_point + Vec3(r * cos(p0), r * sin(p0), 0));
+        p0 += increment;
+    }
+    auto *movingTest = new MovingPathPoint();
+    movingTest->setName("movingTest");
+    movingTest->setParentFrame(*wrappingFrame);
+    SimTK::Vector a;
+    a[0] = 1; a[1] = 2; a[2] = 3;
+    PolynomialFunction xFunc(a);
+    movingTest->set_x_location(xFunc);
 
-    // Configure the vastus muscle to wrap over the patella.
-    muscle->updGeometryPath().addPathWrap(*wrapSurface);
+    muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
+
+    model.addForce(muscle);
+    model.addForce(springToLeft);
+    model.addForce(springToRight);
 
 
 

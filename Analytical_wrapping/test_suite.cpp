@@ -34,6 +34,8 @@ using OpenSim::Exception;
 
 Model buildWrappingModel(bool showVisualizer, const testCase& tc);
 
+Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc);
+
 void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
@@ -62,13 +64,12 @@ int main(int argc, char* argv[]) {
     f.CYLINDER_ROT = Vec3(0.0,1.0,0.0);
 
     // Run each test case
-    testCase tests[6] = {a,b,c,d,e,f};
+//    testCase tests[6] = {a,b,c,d,e,f};
+    testCase tests[1] = {a};
     int testCount = sizeof(tests)/sizeof(tests[0]);
-    std::cout << testCount << std::endl;
     double runTimes[testCount];
-
     for (int i=0; i<testCount; i++) {
-        int runCount = 6;
+        int runCount = 1;
         try {
             for (int ii=0; ii<runCount; ii++){
                 runTimes[i] += test(tests[i]);
@@ -90,6 +91,7 @@ double test(const testCase& tc) {
     using namespace OpenSim;
 
     auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
+//    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
     //model.printSubcomponentInfo();
     //model.printSubcomponentInfo<Joint>();
 
