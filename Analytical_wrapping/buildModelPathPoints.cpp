@@ -112,10 +112,17 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     auto *movingTest = new MovingPathPoint();
     movingTest->setName("movingTest");
     movingTest->setParentFrame(*wrappingFrame);
-    SimTK::Vector a;
-    a[0] = 1; a[1] = 2; a[2] = 3;
-    PolynomialFunction xFunc(a);
+
+    // Create two polynomial functions that describe the x and y location of the tangent
+    // See the MATLAB script "path_points_symbolic.m" for the derivation
+    SimTK::Vector Cx = SimTK::Vector(3);
+    SimTK::Vector Cy = SimTK::Vector(3);
+    Cx[0] = 0.002531; Cx[1] = 0.204411; Cx[2] = -0.169422;
+    Cy[0] = 0.094689; Cy[1] = 0.872633; Cy[2] =  0.075564;
+    PolynomialFunction xFunc(Cx);
+    PolynomialFunction yFunc(Cy);
     movingTest->set_x_location(xFunc);
+//    movingTest->set_y_location(yFunc);
 
     muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
 

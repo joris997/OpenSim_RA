@@ -90,8 +90,8 @@ int main(int argc, char* argv[]) {
 double test(const testCase& tc) {
     using namespace OpenSim;
 
-    auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
-//    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
+//    auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
+    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
     //model.printSubcomponentInfo();
     //model.printSubcomponentInfo<Joint>();
 

@@ -17,7 +17,7 @@ struct testCase {
     double BODY_OFFSET       { 0.4 };
     // Wrapping body parameters
     double CYLINDER_RADIUS   { 0.08 };
-    double CYLINDER_HEIGHT   { 0.5 };
+    double CYLINDER_HEIGHT   { 1.00 };
     SimTK::Vec3 CYLINDER_ROT {0.0, 0.0, 0.0};
 };
 

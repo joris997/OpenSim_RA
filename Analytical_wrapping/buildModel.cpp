@@ -100,12 +100,12 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
                                                  SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
     // Add the wrapping surface
-//    auto wrapSurface = new WrapCylinder();
-    auto wrapSurface = new WrapEllipsoid();
-//    wrapSurface->setAllPropertiesUseDefault(true);
-//    wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-//    wrapSurface->set_length(1);
-    wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
+    auto wrapSurface = new WrapCylinder();
+//    auto wrapSurface = new WrapEllipsoid();
+    wrapSurface->setAllPropertiesUseDefault(true);
+    wrapSurface->set_radius(tc.CYLINDER_RADIUS);
+    wrapSurface->set_length(1);
+//    wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
     wrapSurface->set_xyz_body_rotation(Vec3(tc.CYLINDER_ROT[0], tc.CYLINDER_ROT[1], tc.CYLINDER_ROT[2]));
     wrapSurface->set_quadrant("+y");
 
