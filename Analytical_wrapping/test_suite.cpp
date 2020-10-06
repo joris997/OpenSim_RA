@@ -36,6 +36,8 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc);
 
 Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc);
 
+Model buildWrappingModelHorizontal(bool showVisualizer, const testCase& tc);
+
 void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
@@ -91,9 +93,12 @@ double test(const testCase& tc) {
     using namespace OpenSim;
 
 //    auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
-    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
+    auto model = buildWrappingModelHorizontal(tc.SHOW_VISUALIZER, tc);
+//    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
     //model.printSubcomponentInfo();
     //model.printSubcomponentInfo<Joint>();
+    model.finalizeConnections();
+    model.print("model.osim");
 
     // Add console for results
 //    addConsole(model, tc);
@@ -117,28 +122,31 @@ double test(const testCase& tc) {
                  ticks << " clicks, " <<
                  runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
-    // unpack the table to analyze the results
-    const auto headings = table->getTable().getColumnLabels();
-    const auto leftHeight = table->getTable().getDependentColumnAtIndex(0);
-    const auto rightHeight = table->getTable().getDependentColumnAtIndex(1);
-    const auto fiberLength = table->getTable().getDependentColumnAtIndex(2);
-    const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
+    bool checkAnalytical = false;
+    if (checkAnalytical){
+        // unpack the table to analyze the results
+        const auto headings = table->getTable().getColumnLabels();
+        const auto leftHeight = table->getTable().getDependentColumnAtIndex(0);
+        const auto rightHeight = table->getTable().getDependentColumnAtIndex(1);
+        const auto fiberLength = table->getTable().getDependentColumnAtIndex(2);
+        const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
 
-    bool testPass = true;
-    for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
-        double lNumerical  = fiberLength[i] + tendonLength[i];
-        double lAnalytical = analyticalSolution(leftHeight[i], tc, true);
+        bool testPass = true;
+        for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
+            double lNumerical  = fiberLength[i] + tendonLength[i];
+            double lAnalytical = analyticalSolution(leftHeight[i], tc, true);
 
-        double margin = 0.01;   // 0.1% margin allowed
-        if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
-            testPass = false;
-            std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
+            double margin = 0.01;   // 0.1% margin allowed
+            if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
+                testPass = false;
+                std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
+            }
         }
-    }
-    if (testPass){
-        std::cout << "Test status (" << tc.CYLINDER_ROT[1] << "): [PASSED]" << std::endl;
-    } else {
-        std::cout << "Test status: [FAILED]" << std::endl;
+        if (testPass){
+            std::cout << "Test status (" << tc.CYLINDER_ROT[1] << "): [PASSED]" << std::endl;
+        } else {
+            std::cout << "Test status: [FAILED]" << std::endl;
+        }
     }
     return runTime;
 }

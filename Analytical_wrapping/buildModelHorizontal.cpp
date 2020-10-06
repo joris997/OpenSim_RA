@@ -23,7 +23,7 @@
 
 using namespace OpenSim;
 
-Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
+Model buildWrappingModelHorizontal(bool showVisualizer, const testCase& tc) {
     using SimTK::Vec3;
     using SimTK::Inertia;
 
@@ -49,7 +49,7 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
 
     // Attach the pelvis to ground with a vertical slider joint, and attach the
     // pelvis, thigh, and shank bodies to each other with pin joints.
-    Vec3 sliderOrientation(0, 0, SimTK::Pi / 2.);
+    Vec3 sliderOrientation(0, 0, 0);
     Vec3 bodyOffset(tc.BODY_OFFSET, 0, 0);
     auto sliderLeft = new SliderJoint("sliderLeft", model.getGround(), bodyOffset,
                                       sliderOrientation, *bodyLeft, Vec3(0), sliderOrientation);
@@ -67,7 +67,7 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
     auto &sliderCoordLeft =
             sliderLeft->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordLeft.setName("yCoordSliderLeft");
-    sliderCoordLeft.setDefaultValue(0.5);
+    sliderCoordLeft.setDefaultValue(-0.5);
     auto &sliderCoordRight =
             sliderRight->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordRight.setName("yCoordSliderRight");

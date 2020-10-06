@@ -9,7 +9,7 @@
 
 struct testCase {
     // General parameters
-    bool   SHOW_VISUALIZER   { true };
+    bool   SHOW_VISUALIZER   { false };
     double REPORTING_INTERVAL{ 0.2 };
     double FINAL_TIME        { 5.0 };
     // Sliding body parameters

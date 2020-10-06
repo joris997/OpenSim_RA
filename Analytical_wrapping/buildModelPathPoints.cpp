@@ -76,7 +76,6 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     sliderCoordRight.setDefaultValue(0.5);
 
 
-
     // MUSCLES AND SPRINGS
     double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5,
             mclPennAng = 0.;
@@ -98,31 +97,64 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     bodyGround->addComponent(wrappingFrame);
     // Add the wrapping surface
     muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
-    auto center_point = Vec3(0,0,0);
-    double r = tc.CYLINDER_RADIUS;
-    double p0 = SimTK::Pi/4;
-    double pe = 3*SimTK::Pi/4;
-    int nPoints = 6;
-    double increment = (pe-p0)/(nPoints);
-    for (int i=0; i<nPoints+1; i++) {
-        std::string name = "sub" + std::to_string(i);
-        muscle->addNewPathPoint(name, *wrappingFrame, center_point + Vec3(r * cos(p0), r * sin(p0), 0));
-        p0 += increment;
-    }
-    auto *movingTest = new MovingPathPoint();
-    movingTest->setName("movingTest");
-    movingTest->setParentFrame(*wrappingFrame);
+
+
+
+//    auto center_point = Vec3(0,0,0);
+//    double r = tc.CYLINDER_RADIUS;
+//    double p0 = SimTK::Pi/4;
+//    double pe = 3*SimTK::Pi/4;
+//    int nPoints = 6;
+//    double increment = (pe-p0)/(nPoints);
+//    for (int i=0; i<nPoints+1; i++) {
+//        std::string name = "sub" + std::to_string(i);
+//        muscle->addNewPathPoint(name, *wrappingFrame, center_point + Vec3(r * cos(p0), r * sin(p0), 0));
+//        p0 += increment;
+//    }
+    auto *movingLeft = new MovingPathPoint();
+    auto *movingRight = new MovingPathPoint();
+    movingLeft->setName("movingLeft");
+    movingRight->setName("movingRight");
+
+    movingLeft->setParentFrame(*wrappingFrame);
+    movingRight->setParentFrame(*wrappingFrame);
 
     // Create two polynomial functions that describe the x and y location of the tangent
     // See the MATLAB script "path_points_symbolic.m" for the derivation
-    SimTK::Vector Cx = SimTK::Vector(3);
+    SimTK::Vector CxLeft = SimTK::Vector(3);
+    SimTK::Vector CxRight = SimTK::Vector(3);
     SimTK::Vector Cy = SimTK::Vector(3);
-    Cx[0] = 0.002531; Cx[1] = 0.204411; Cx[2] = -0.169422;
-    Cy[0] = 0.094689; Cy[1] = 0.872633; Cy[2] =  0.075564;
-    PolynomialFunction xFunc(Cx);
+    // Polynomial parameters: [0]x^2 + [1]x + [2] etc.
+    // MATLAB: [3]x^2 + [2]x + [1] etc.
+//    CxLeft[2] = 0.0375215043; CxLeft[1] = 0.1344325437; CxLeft[0] = -0.1694221933;
+//    CxRight[2] = -CxLeft[2]; CxRight[1] = -CxLeft[1]; CxRight[0] = -CxLeft[0];
+//    Cy[2] = 1.0428885526; Cy[1] = -1.0237637424; Cy[0] =  0.0755649037;
+    CxLeft[2] = 0.2; CxLeft[1] = 0.2; CxLeft[0] = 0.2;
+    CxRight[2] = 0.2; CxRight[1] = 0.2; CxRight[0] = 0.2;
+    Cy[2] = 0.2; Cy[1] = 0.2; Cy[0] = 0.2;
+
+    PolynomialFunction xFuncLeft(CxLeft);
+    PolynomialFunction xFuncRight(CxRight);
     PolynomialFunction yFunc(Cy);
-    movingTest->set_x_location(xFunc);
-//    movingTest->set_y_location(yFunc);
+
+    // Left moving point
+    movingLeft->setXCoordinate(sliderCoordLeft);
+    movingLeft->setYCoordinate(sliderCoordLeft);
+    movingLeft->setZCoordinate(sliderCoordLeft);
+    movingLeft->set_x_location(xFuncLeft);
+    movingLeft->set_y_location(yFunc);
+    movingLeft->set_z_location(Constant(0));
+
+    // Right moving point
+    movingRight->setXCoordinate(sliderCoordLeft);
+    movingRight->setYCoordinate(sliderCoordLeft);
+    movingRight->setZCoordinate(sliderCoordLeft);
+    movingRight->set_x_location(xFuncRight);
+    movingRight->set_y_location(yFunc);
+    movingRight->set_z_location(Constant(0));
+
+    muscle->updGeometryPath().updPathPointSet().insert(1,movingLeft);
+    muscle->updGeometryPath().updPathPointSet().insert(2,movingRight);
 
     muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
 
@@ -135,7 +167,7 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     // CONTROLLER
     auto brain = new PrescribedController();
     brain->setActuators(model.updActuators());
-    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 1.0, 0.0, 0.5, 0.0};
+    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
     auto controlFunction = new PiecewiseConstantFunction(5, t, x);
     brain->prescribeControlForActuator("muscle", controlFunction);
     model.addController(brain);
