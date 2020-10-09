@@ -28,15 +28,19 @@
 static const std::string sliderLPath{"/jointset/sliderLeft/yCoordSliderLeft"};
 static const std::string sliderRPath{"/jointset/sliderRight/yCoordSliderRight"};
 
-using namespace OpenSim;
-using namespace SimTK;
+std::ofstream outputFile("../Analytical_wrapping/path_point_plotting/outputFile.txt");
+
+using OpenSim::Exception;
+using OpenSim::Model;
+using OpenSim::ConsoleReporter;
+using SimTK::Vec3;
 using OpenSim::Exception;
 
-Model buildWrappingModel(bool showVisualizer, const testCase& tc);
+Model buildWrappingModel(const testCase& tc);
 
-Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc);
+Model buildWrappingModelPathPoints(const testCase& tc, bool moving);
 
-Model buildWrappingModelHorizontal(bool showVisualizer, const testCase& tc);
+Model buildWrappingModelHorizontal(const testCase& tc);
 
 void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
@@ -53,28 +57,17 @@ double test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
     // Create test cases;
-    testCase a;
-    testCase b;
-    testCase c;
-    testCase d;
-    testCase e;
-    testCase f;
-    b.CYLINDER_ROT = Vec3(0.0,0.2,0.0);
-    c.CYLINDER_ROT = Vec3(0.0,0.4,0.0);
-    d.CYLINDER_ROT = Vec3(0.0,0.6,0.0);
-    e.CYLINDER_ROT = Vec3(0.0,0.8,0.0);
-    f.CYLINDER_ROT = Vec3(0.0,1.0,0.0);
+    std::vector<testCase> testCases(40);
+    for (int i=0; i<testCases.size(); i++){
+        testCases[i].DISCRETIZATION = 3 + i*5;
+    }
 
-    // Run each test case
-//    testCase tests[6] = {a,b,c,d,e,f};
-    testCase tests[1] = {a};
-    int testCount = sizeof(tests)/sizeof(tests[0]);
-    double runTimes[testCount];
-    for (int i=0; i<testCount; i++) {
+    double runTimes[testCases.size()];
+    for (int i=0; i<testCases.size(); i++) {
         int runCount = 1;
         try {
             for (int ii=0; ii<runCount; ii++){
-                runTimes[i] += test(tests[i]);
+                runTimes[i] += test(testCases[i]);
             }
         }
         catch (const std::exception& ex) {
@@ -83,8 +76,8 @@ int main(int argc, char* argv[]) {
         }
         runTimes[i] = runTimes[i]/((double)runCount+1);
     }
-    for (int i=0; i<testCount; i++){
-        std::cout << "Average test (" << tests[i].CYLINDER_ROT[1] << "): " << runTimes[i] << std::endl;
+    for (int i=0; i<testCases.size(); i++){
+        std::cout << "Average test (" << testCases[i].CYLINDER_ROT[1] << "): " << runTimes[i] << std::endl;
     }
     return 0;
 }
@@ -92,13 +85,14 @@ int main(int argc, char* argv[]) {
 double test(const testCase& tc) {
     using namespace OpenSim;
 
-//    auto model = buildWrappingModel(tc.SHOW_VISUALIZER, tc);
-    auto model = buildWrappingModelHorizontal(tc.SHOW_VISUALIZER, tc);
-//    auto model = buildWrappingModelPathPoints(tc.SHOW_VISUALIZER, tc);
-    //model.printSubcomponentInfo();
-    //model.printSubcomponentInfo<Joint>();
-    model.finalizeConnections();
-    model.print("model.osim");
+//    auto model = buildWrappingModelHorizontal(tc.SHOW_VISUALIZER, tc);
+    auto model = buildWrappingModelPathPoints(tc, false);
+//    auto model = buildWrappingModel(tc);
+
+//    model.printSubcomponentInfo();
+//    model.printSubcomponentInfo<Joint>();
+//    model.finalizeConnections();
+//    model.print("model.osim");
 
     // Add console for results
 //    addConsole(model, tc);
@@ -113,23 +107,31 @@ double test(const testCase& tc) {
     model.addComponent(table);
 
     SimTK::State& x0 = model.initSystem();
+
     // time the simulation
     clock_t ticks = clock();
     simulate(model, x0, tc.FINAL_TIME,true);
     ticks = clock() - ticks;
     double runTime = (float)ticks/CLOCKS_PER_SEC;
     std::cout << "Execution time: " <<
-                 ticks << " clicks, " <<
-                 runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
+              ticks << " clicks, " <<
+              runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
+    const auto fiberLength = table->getTable().getDependentColumnAtIndex(2);
+    const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
+    std::vector<double> muscleLength(fiberLength.size());
+    for(int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
+        muscleLength[i] = (double)fiberLength[i] + (double)tendonLength[i];
+    }
+
+    // compare analytical and numerical solution
     bool checkAnalytical = false;
     if (checkAnalytical){
         // unpack the table to analyze the results
         const auto headings = table->getTable().getColumnLabels();
         const auto leftHeight = table->getTable().getDependentColumnAtIndex(0);
         const auto rightHeight = table->getTable().getDependentColumnAtIndex(1);
-        const auto fiberLength = table->getTable().getDependentColumnAtIndex(2);
-        const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
+
 
         bool testPass = true;
         for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
@@ -147,6 +149,15 @@ double test(const testCase& tc) {
         } else {
             std::cout << "Test status: [FAILED]" << std::endl;
         }
+    }
+
+    // write results to a text file
+    bool writeToFile = false;
+    if (writeToFile){
+        outputFile << tc.DISCRETIZATION << "\n";
+        outputFile << runTime << "\n";
+        for (const auto &e : muscleLength) outputFile << e << "\t";
+        outputFile << "\n";
     }
     return runTime;
 }

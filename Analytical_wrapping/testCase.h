@@ -12,9 +12,11 @@ struct testCase {
     bool   SHOW_VISUALIZER   { false };
     double REPORTING_INTERVAL{ 0.2 };
     double FINAL_TIME        { 5.0 };
+    int    DISCRETIZATION    { 6 };
+    bool   PATH_POINTS       { true };
     // Sliding body parameters
     double BODY_SIZE         { 0.1 };
-    double BODY_OFFSET       { 0.4 };
+    double BODY_OFFSET       { 0.08 };
     // Wrapping body parameters
     double CYLINDER_RADIUS   { 0.08 };
     double CYLINDER_HEIGHT   { 1.00 };

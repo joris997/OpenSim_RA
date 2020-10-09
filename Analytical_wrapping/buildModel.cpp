@@ -23,7 +23,8 @@
 
 using namespace OpenSim;
 
-Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
+Model buildWrappingModel(const testCase& tc) {
+    bool showVisualizer = tc.SHOW_VISUALIZER;
     using SimTK::Vec3;
     using SimTK::Inertia;
 
@@ -122,7 +123,8 @@ Model buildWrappingModel(bool showVisualizer, const testCase& tc) {
     // CONTROLLER
     auto brain = new PrescribedController();
     brain->setActuators(model.updActuators());
-    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 1.0, 0.0, 0.5, 0.0};
+    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
+//    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 1.0, 0.0, 0.5, 0.0};
     auto controlFunction = new PiecewiseConstantFunction(5, t, x);
     brain->prescribeControlForActuator("muscle", controlFunction);
     model.addController(brain);

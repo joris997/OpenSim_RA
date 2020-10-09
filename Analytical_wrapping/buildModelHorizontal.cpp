@@ -23,7 +23,8 @@
 
 using namespace OpenSim;
 
-Model buildWrappingModelHorizontal(bool showVisualizer, const testCase& tc) {
+Model buildWrappingModelHorizontal(const testCase& tc) {
+    bool showVisualizer = tc.SHOW_VISUALIZER;
     using SimTK::Vec3;
     using SimTK::Inertia;
 

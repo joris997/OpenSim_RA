@@ -25,7 +25,8 @@
 
 using namespace OpenSim;
 
-Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
+Model buildWrappingModelPathPoints(const testCase& tc, bool moving) {
+    bool showVisualizer = tc.SHOW_VISUALIZER;
     using SimTK::Vec3;
     using SimTK::Inertia;
 
@@ -76,6 +77,7 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     sliderCoordRight.setDefaultValue(0.5);
 
 
+
     // MUSCLES AND SPRINGS
     double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5,
             mclPennAng = 0.;
@@ -99,62 +101,71 @@ Model buildWrappingModelPathPoints(bool showVisualizer, const testCase& tc) {
     muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
 
 
+    if (moving) {
+        auto *movingLeft = new MovingPathPoint();
+        auto *movingRight = new MovingPathPoint();
+        movingLeft->setName("movingLeft");
+        movingRight->setName("movingRight");
 
-//    auto center_point = Vec3(0,0,0);
-//    double r = tc.CYLINDER_RADIUS;
-//    double p0 = SimTK::Pi/4;
-//    double pe = 3*SimTK::Pi/4;
-//    int nPoints = 6;
-//    double increment = (pe-p0)/(nPoints);
-//    for (int i=0; i<nPoints+1; i++) {
-//        std::string name = "sub" + std::to_string(i);
-//        muscle->addNewPathPoint(name, *wrappingFrame, center_point + Vec3(r * cos(p0), r * sin(p0), 0));
-//        p0 += increment;
-//    }
-    auto *movingLeft = new MovingPathPoint();
-    auto *movingRight = new MovingPathPoint();
-    movingLeft->setName("movingLeft");
-    movingRight->setName("movingRight");
+        movingLeft->setParentFrame(*wrappingFrame);
+        movingRight->setParentFrame(*wrappingFrame);
 
-    movingLeft->setParentFrame(*wrappingFrame);
-    movingRight->setParentFrame(*wrappingFrame);
-
-    // Create two polynomial functions that describe the x and y location of the tangent
-    // See the MATLAB script "path_points_symbolic.m" for the derivation
-    SimTK::Vector CxLeft = SimTK::Vector(3);
-    SimTK::Vector CxRight = SimTK::Vector(3);
-    SimTK::Vector Cy = SimTK::Vector(3);
-    // Polynomial parameters: [0]x^2 + [1]x + [2] etc.
-    // MATLAB: [3]x^2 + [2]x + [1] etc.
+        // Create two polynomial functions that describe the x and y location of the tangent
+        // See the MATLAB script "path_points_symbolic.m" for the derivation
+        SimTK::Vector CxLeft = SimTK::Vector(3);
+        SimTK::Vector CxRight = SimTK::Vector(3);
+        SimTK::Vector Cy = SimTK::Vector(3);
+        // Polynomial parameters: [0]x^2 + [1]x + [2] etc.
+        // MATLAB: [3]x^2 + [2]x + [1] etc.
 //    CxLeft[2] = 0.0375215043; CxLeft[1] = 0.1344325437; CxLeft[0] = -0.1694221933;
 //    CxRight[2] = -CxLeft[2]; CxRight[1] = -CxLeft[1]; CxRight[0] = -CxLeft[0];
 //    Cy[2] = 1.0428885526; Cy[1] = -1.0237637424; Cy[0] =  0.0755649037;
-    CxLeft[2] = 0.2; CxLeft[1] = 0.2; CxLeft[0] = 0.2;
-    CxRight[2] = 0.2; CxRight[1] = 0.2; CxRight[0] = 0.2;
-    Cy[2] = 0.2; Cy[1] = 0.2; Cy[0] = 0.2;
+        CxLeft[2] = 0.2;
+        CxLeft[1] = 0.2;
+        CxLeft[0] = 0.2;
+        CxRight[2] = 0.2;
+        CxRight[1] = 0.2;
+        CxRight[0] = 0.2;
+        Cy[2] = 0.2;
+        Cy[1] = 0.2;
+        Cy[0] = 0.2;
 
-    PolynomialFunction xFuncLeft(CxLeft);
-    PolynomialFunction xFuncRight(CxRight);
-    PolynomialFunction yFunc(Cy);
+        PolynomialFunction xFuncLeft(CxLeft);
+        PolynomialFunction xFuncRight(CxRight);
+        PolynomialFunction yFunc(Cy);
 
-    // Left moving point
-    movingLeft->setXCoordinate(sliderCoordLeft);
-    movingLeft->setYCoordinate(sliderCoordLeft);
-    movingLeft->setZCoordinate(sliderCoordLeft);
-    movingLeft->set_x_location(xFuncLeft);
-    movingLeft->set_y_location(yFunc);
-    movingLeft->set_z_location(Constant(0));
+        // Left moving point
+        movingLeft->setXCoordinate(sliderCoordLeft);
+        movingLeft->setYCoordinate(sliderCoordLeft);
+        movingLeft->setZCoordinate(sliderCoordLeft);
+        movingLeft->set_x_location(xFuncLeft);
+        movingLeft->set_y_location(yFunc);
+        movingLeft->set_z_location(Constant(0));
 
-    // Right moving point
-    movingRight->setXCoordinate(sliderCoordLeft);
-    movingRight->setYCoordinate(sliderCoordLeft);
-    movingRight->setZCoordinate(sliderCoordLeft);
-    movingRight->set_x_location(xFuncRight);
-    movingRight->set_y_location(yFunc);
-    movingRight->set_z_location(Constant(0));
+        // Right moving point
+        movingRight->setXCoordinate(sliderCoordLeft);
+        movingRight->setYCoordinate(sliderCoordLeft);
+        movingRight->setZCoordinate(sliderCoordLeft);
+        movingRight->set_x_location(xFuncRight);
+        movingRight->set_y_location(yFunc);
+        movingRight->set_z_location(Constant(0));
 
-    muscle->updGeometryPath().updPathPointSet().insert(1,movingLeft);
-    muscle->updGeometryPath().updPathPointSet().insert(2,movingRight);
+        muscle->updGeometryPath().updPathPointSet().insert(1, movingLeft);
+        muscle->updGeometryPath().updPathPointSet().insert(2, movingRight);
+    }
+    else{
+        auto center_point = Vec3(0,0,0);
+        double r = tc.CYLINDER_RADIUS;
+        double p0 = 0;
+        double pe = SimTK::Pi;
+        int nPoints = tc.DISCRETIZATION-1;
+        double increment = (pe-p0)/(nPoints);
+        for (int i=0; i<nPoints+1; i++) {
+            std::string name = "sub" + std::to_string(i);
+            muscle->addNewPathPoint(name, *wrappingFrame, center_point + Vec3(r * cos(p0), r * sin(p0), 0));
+            p0 += increment;
+        }
+    }
 
     muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
 
