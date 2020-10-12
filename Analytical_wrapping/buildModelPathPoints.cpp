@@ -117,18 +117,18 @@ Model buildWrappingModelPathPoints(const testCase& tc, bool moving) {
         SimTK::Vector Cy = SimTK::Vector(3);
         // Polynomial parameters: [0]x^2 + [1]x + [2] etc.
         // MATLAB: [3]x^2 + [2]x + [1] etc.
-//    CxLeft[2] = 0.0375215043; CxLeft[1] = 0.1344325437; CxLeft[0] = -0.1694221933;
-//    CxRight[2] = -CxLeft[2]; CxRight[1] = -CxLeft[1]; CxRight[0] = -CxLeft[0];
-//    Cy[2] = 1.0428885526; Cy[1] = -1.0237637424; Cy[0] =  0.0755649037;
-        CxLeft[2] = 0.2;
-        CxLeft[1] = 0.2;
-        CxLeft[0] = 0.2;
-        CxRight[2] = 0.2;
-        CxRight[1] = 0.2;
-        CxRight[0] = 0.2;
-        Cy[2] = 0.2;
-        Cy[1] = 0.2;
-        Cy[0] = 0.2;
+        CxLeft[2] = 0.0375215043; CxLeft[1] = 0.1344325437; CxLeft[0] = -0.1694221933;
+        CxRight[2] = -CxLeft[2]; CxRight[1] = -CxLeft[1]; CxRight[0] = -CxLeft[0];
+        Cy[2] = 1.0428885526; Cy[1] = -1.0237637424; Cy[0] =  0.0755649037;
+//        CxLeft[2] = 0.1;
+//        CxLeft[1] = 0;
+//        CxLeft[0] = 0;
+//        CxRight[2] = -0.1;
+//        CxRight[1] = 0;
+//        CxRight[0] = 0;
+//        Cy[2] = 0.2;
+//        Cy[1] = 0.2;
+//        Cy[0] = 0.2;
 
         PolynomialFunction xFuncLeft(CxLeft);
         PolynomialFunction xFuncRight(CxRight);

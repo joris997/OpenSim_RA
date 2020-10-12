@@ -9,7 +9,7 @@
 
 struct testCase {
     // General parameters
-    bool   SHOW_VISUALIZER   { false };
+    bool   SHOW_VISUALIZER   { true };
     double REPORTING_INTERVAL{ 0.2 };
     double FINAL_TIME        { 5.0 };
     int    DISCRETIZATION    { 6 };
@@ -19,7 +19,8 @@ struct testCase {
     double BODY_OFFSET       { 0.08 };
     // Wrapping body parameters
     double CYLINDER_RADIUS   { 0.08 };
-    double CYLINDER_HEIGHT   { 1.00 };
+//    double CYLINDER_HEIGHT   { 1.00 };
+    double CYLINDER_HEIGHT   { 0.40 };
     SimTK::Vec3 CYLINDER_ROT {0.0, 0.0, 0.0};
 };
 

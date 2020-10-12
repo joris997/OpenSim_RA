@@ -48,9 +48,9 @@ x = 0.5;
 Cx = double(subs(Cx))
 Cy = double(subs(Cy))
 
-syms r x hD real
-x_loc = subs(x_loc,[r,x],[0.08,0.5]);
-y_loc = subs(y_loc,[r,x],[0.08,0.5]);
+% syms r x yB yC hD real
+x_loc = subs(x_loc);%,[r,x,yC],[0.08,0.5,1.00]);
+y_loc = subs(y_loc);%,[r,x,yC],[0.08,0.5,1.00]);
 
 %% plot approximation
 xrange = 0:0.01:1;

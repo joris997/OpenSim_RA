@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and        *
  * limitations under the License.                                             *
  * -------------------------------------------------------------------------- */
-
 #include <OpenSim/OpenSim.h>
 #include "testCase.h"
 #include "analyticalSolution.h"
@@ -57,7 +56,7 @@ double test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
     // Create test cases;
-    std::vector<testCase> testCases(40);
+    std::vector<testCase> testCases(1);
     for (int i=0; i<testCases.size(); i++){
         testCases[i].DISCRETIZATION = 3 + i*5;
     }
@@ -85,8 +84,8 @@ int main(int argc, char* argv[]) {
 double test(const testCase& tc) {
     using namespace OpenSim;
 
-//    auto model = buildWrappingModelHorizontal(tc.SHOW_VISUALIZER, tc);
-    auto model = buildWrappingModelPathPoints(tc, false);
+    auto model = buildWrappingModelHorizontal(tc);
+//    auto model = buildWrappingModelPathPoints(tc, true);
 //    auto model = buildWrappingModel(tc);
 
 //    model.printSubcomponentInfo();
@@ -152,12 +151,12 @@ double test(const testCase& tc) {
     }
 
     // write results to a text file
-    bool writeToFile = false;
-    if (writeToFile){
-        outputFile << tc.DISCRETIZATION << "\n";
-        outputFile << runTime << "\n";
-        for (const auto &e : muscleLength) outputFile << e << "\t";
-        outputFile << "\n";
-    }
+//    bool writeToFile = false;
+//    if (writeToFile){
+//        outputFile << tc.DISCRETIZATION << "\n";
+//        outputFile << runTime << "\n";
+//        for (const auto &e : muscleLength) outputFile << e << "\t";
+//        outputFile << "\n";
+//    }
     return runTime;
 }
