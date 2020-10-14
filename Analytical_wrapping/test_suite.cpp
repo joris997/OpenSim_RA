@@ -36,9 +36,7 @@ using SimTK::Vec3;
 using OpenSim::Exception;
 
 Model buildWrappingModel(const testCase& tc);
-
 Model buildWrappingModelPathPoints(const testCase& tc, bool moving);
-
 Model buildWrappingModelHorizontal(const testCase& tc);
 
 void addConsole(Model& model, const testCase& tc){
@@ -52,11 +50,33 @@ void addConsole(Model& model, const testCase& tc){
     model.addComponent(console);
 }
 
+bool checkAnalytical(const OpenSim::TableReporter_<double,double>& table, const testCase& tc){
+    // unpack the table to analyze the results
+    const auto headings = table.getTable().getColumnLabels();
+    const auto leftHeight = table.getTable().getDependentColumnAtIndex(0);
+    const auto rightHeight = table.getTable().getDependentColumnAtIndex(1);
+    const auto fiberLength = table.getTable().getDependentColumnAtIndex(2);
+    const auto tendonLength = table.getTable().getDependentColumnAtIndex(3);
+
+    bool testPass = true;
+    for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
+        double lNumerical  = fiberLength[i] + tendonLength[i];
+        double lAnalytical = analyticalSolution(leftHeight[i], tc, true);
+
+        double margin = 0.01;   // 0.1% margin allowed
+        if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
+            testPass = false;
+            std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
+        }
+    }
+    return testPass;
+}
+
 double test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
     // Create test cases;
-    std::vector<testCase> testCases(1);
+    std::vector<testCase> testCases(30);
     for (int i=0; i<testCases.size(); i++){
         testCases[i].DISCRETIZATION = 3 + i*5;
     }
@@ -75,17 +95,14 @@ int main(int argc, char* argv[]) {
         }
         runTimes[i] = runTimes[i]/((double)runCount+1);
     }
-    for (int i=0; i<testCases.size(); i++){
-        std::cout << "Average test (" << testCases[i].CYLINDER_ROT[1] << "): " << runTimes[i] << std::endl;
-    }
     return 0;
 }
 
 double test(const testCase& tc) {
     using namespace OpenSim;
 
-    auto model = buildWrappingModelHorizontal(tc);
-//    auto model = buildWrappingModelPathPoints(tc, true);
+//    auto model = buildWrappingModelHorizontal(tc);
+    auto model = buildWrappingModelPathPoints(tc, false);
 //    auto model = buildWrappingModel(tc);
 
 //    model.printSubcomponentInfo();
@@ -116,34 +133,21 @@ double test(const testCase& tc) {
               ticks << " clicks, " <<
               runTime << " seconds (sim time = " << tc.FINAL_TIME << " seconds)" << std::endl;
 
+    // compute the muscle length numerically
     const auto fiberLength = table->getTable().getDependentColumnAtIndex(2);
     const auto tendonLength = table->getTable().getDependentColumnAtIndex(3);
     std::vector<double> muscleLength(fiberLength.size());
+    std::vector<double> fiberLengthVector(fiberLength.size());
+    std::vector<double> tendonLengthVector(tendonLength.size());
     for(int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
         muscleLength[i] = (double)fiberLength[i] + (double)tendonLength[i];
+        fiberLengthVector[i] = (double)fiberLength[i];
+        tendonLengthVector[i] = (double)tendonLength[i];
     }
 
     // compare analytical and numerical solution
-    bool checkAnalytical = false;
-    if (checkAnalytical){
-        // unpack the table to analyze the results
-        const auto headings = table->getTable().getColumnLabels();
-        const auto leftHeight = table->getTable().getDependentColumnAtIndex(0);
-        const auto rightHeight = table->getTable().getDependentColumnAtIndex(1);
-
-
-        bool testPass = true;
-        for (int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
-            double lNumerical  = fiberLength[i] + tendonLength[i];
-            double lAnalytical = analyticalSolution(leftHeight[i], tc, true);
-
-            double margin = 0.01;   // 0.1% margin allowed
-            if (lNumerical > (1+margin)*lAnalytical || lNumerical < (1-margin)*lAnalytical) {
-                testPass = false;
-                std::cout << "[WARNING] Numerical does not correspond to Analytical at index: " << i << std::endl;
-            }
-        }
-        if (testPass){
+    if (false){
+        if (checkAnalytical(*table,tc)){
             std::cout << "Test status (" << tc.CYLINDER_ROT[1] << "): [PASSED]" << std::endl;
         } else {
             std::cout << "Test status: [FAILED]" << std::endl;
@@ -151,12 +155,16 @@ double test(const testCase& tc) {
     }
 
     // write results to a text file
-//    bool writeToFile = false;
-//    if (writeToFile){
-//        outputFile << tc.DISCRETIZATION << "\n";
-//        outputFile << runTime << "\n";
-//        for (const auto &e : muscleLength) outputFile << e << "\t";
-//        outputFile << "\n";
-//    }
+    if (true){
+        outputFile << tc.DISCRETIZATION << "\n";
+        outputFile << runTime << "\n";
+        outputFile << tc.REPORTING_INTERVAL << "\n";
+        for (const auto &e : muscleLength) outputFile << e << "\t";
+        outputFile << "\n";
+        for (const auto &e : fiberLengthVector) outputFile << e << "\t";
+        outputFile << "\n";
+        for (const auto &e : tendonLengthVector) outputFile << e << "\t";
+        outputFile << "\n";
+    }
     return runTime;
 }
