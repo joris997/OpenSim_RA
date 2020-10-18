@@ -1,10 +1,6 @@
 /* -------------------------------------------------------------------------- *
  *                     buildModelPathPoints.cpp                               *
  * -------------------------------------------------------------------------- *
- * Test_suite that checks analytical solutions of muscle lengths over         *
- * wrapping surfaces with the numerical solutions of OpenSim. Especially      *
- * important for unconventional wrapping (over a rotated cylinder for example *
- *                                                                            *
  * Author(s): Joris Verhagen                                                  *
  *                                                                            *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may    *
@@ -79,8 +75,7 @@ Model buildWrappingModelPathPoints(const testCase& tc, bool moving) {
 
 
     // MUSCLES AND SPRINGS
-    double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5,
-            mclPennAng = 0.;
+    double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5, mclPennAng = 0.;
     auto muscle = new Thelen2003Muscle("muscle", mclFmax, mclOptFibLen,
                                        mclTendonSlackLen, mclPennAng);
 

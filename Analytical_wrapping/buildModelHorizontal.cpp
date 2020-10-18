@@ -1,10 +1,6 @@
 /* -------------------------------------------------------------------------- *
- *                     test_suite.cpp                                         *
+ *                     buildModelHorizontal.cpp                               *
  * -------------------------------------------------------------------------- *
- * Test_suite that checks analytical solutions of muscle lengths over         *
- * wrapping surfaces with the numerical solutions of OpenSim. Especially      *
- * important for unconventional wrapping (over a rotated cylinder for example *
- *                                                                            *
  * Author(s): Joris Verhagen                                                  *
  *                                                                            *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may    *
@@ -86,8 +82,7 @@ Model buildWrappingModelHorizontal(const testCase& tc) {
 
 
     // MUSCLES AND SPRINGS
-    double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5,
-            mclPennAng = 0.;
+    double mclFmax = 4000., mclOptFibLen = 0.55, mclTendonSlackLen = 0.5, mclPennAng = 0.;
     auto muscle = new Thelen2003Muscle("muscle", mclFmax, mclOptFibLen,mclTendonSlackLen, mclPennAng);
     muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
     muscle->addNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));

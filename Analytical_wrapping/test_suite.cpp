@@ -38,6 +38,7 @@ using OpenSim::Exception;
 Model buildWrappingModel(const testCase& tc);
 Model buildWrappingModelPathPoints(const testCase& tc, bool moving);
 Model buildWrappingModelHorizontal(const testCase& tc);
+Model buildWrappingModelDouble(const testCase& tc);
 
 void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
@@ -76,9 +77,11 @@ double test(const testCase& tc);
 
 int main(int argc, char* argv[]) {
     // Create test cases;
-    std::vector<testCase> testCases(30);
+    std::vector<testCase> testCases(20);
     for (int i=0; i<testCases.size(); i++){
-        testCases[i].DISCRETIZATION = 3 + i*5;
+//        testCases[i].DISCRETIZATION = 3 + i*5;
+//        testCases[i].OPT_FIBER_LENGTH += 0.025*i;
+        testCases[i].TENDON_SLACK_LENGTH += 0.025*i;
     }
 
     double runTimes[testCases.size()];
@@ -102,16 +105,16 @@ double test(const testCase& tc) {
     using namespace OpenSim;
 
 //    auto model = buildWrappingModelHorizontal(tc);
-    auto model = buildWrappingModelPathPoints(tc, false);
-//    auto model = buildWrappingModel(tc);
+//    auto model = buildWrappingModelPathPoints(tc, false);
+    auto model = buildWrappingModel(tc);
+//    auto model = buildWrappingModelDouble(tc);
 
 //    model.printSubcomponentInfo();
 //    model.printSubcomponentInfo<Joint>();
 //    model.finalizeConnections();
 //    model.print("model.osim");
-
-    // Add console for results
 //    addConsole(model, tc);
+
     // Add table for result processing
     auto table = new TableReporter();
     table->setName("wrapping_results_table");
@@ -153,12 +156,17 @@ double test(const testCase& tc) {
             std::cout << "Test status: [FAILED]" << std::endl;
         }
     }
-
+    
     // write results to a text file
     if (true){
-        outputFile << tc.DISCRETIZATION << "\n";
         outputFile << runTime << "\n";
+        outputFile << tc.DISCRETIZATION << "\n";
         outputFile << tc.REPORTING_INTERVAL << "\n";
+
+        outputFile << tc.MUSCLE_MAX_FORCE << "\n";
+        outputFile << tc.OPT_FIBER_LENGTH << "\n";
+        outputFile << tc.TENDON_SLACK_LENGTH << "\n";
+
         for (const auto &e : muscleLength) outputFile << e << "\t";
         outputFile << "\n";
         for (const auto &e : fiberLengthVector) outputFile << e << "\t";

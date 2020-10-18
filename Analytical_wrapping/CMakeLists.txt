@@ -3,6 +3,7 @@ add_executable(test_suite
         buildModel.cpp
         buildModelPathPoints.cpp
         buildModelHorizontal.cpp
+        buildModelDouble.cpp
         analyticalSolution.cpp)
 
 target_link_libraries(test_suite common_options_target)

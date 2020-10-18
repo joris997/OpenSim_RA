@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------------------- *
- *                     buildModel.cpp                                         *
+ *                     buildModelDouble.cpp                                   *
  * -------------------------------------------------------------------------- *
  * Author(s): Joris Verhagen                                                  *
  *                                                                            *
@@ -19,7 +19,7 @@
 
 using namespace OpenSim;
 
-Model buildWrappingModel(const testCase& tc) {
+Model buildWrappingModelDouble(const testCase& tc) {
     bool showVisualizer = tc.SHOW_VISUALIZER;
     using SimTK::Vec3;
     using SimTK::Inertia;
@@ -64,20 +64,16 @@ Model buildWrappingModel(const testCase& tc) {
     auto &sliderCoordLeft =
             sliderLeft->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordLeft.setName("yCoordSliderLeft");
-    sliderCoordLeft.setDefaultValue(tc.BODY_HEIGHT);
+    sliderCoordLeft.setDefaultValue(0.5);
     auto &sliderCoordRight =
             sliderRight->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordRight.setName("yCoordSliderRight");
-    sliderCoordRight.setDefaultValue(tc.BODY_HEIGHT);
+    sliderCoordRight.setDefaultValue(0.5);
 
 
 
     // MUSCLES AND SPRINGS
-    double mclFmax = tc.MUSCLE_MAX_FORCE;
-    double mclOptFibLen = tc.OPT_FIBER_LENGTH;
-    double mclTendonSlackLen = tc.TENDON_SLACK_LENGTH;
-    double mclPennAng = 0.;
-
+    double mclFmax = 6000., mclOptFibLen = 1.00, mclTendonSlackLen = 0.5, mclPennAng = 0.0;
     auto muscle = new Thelen2003Muscle("muscle", mclFmax, mclOptFibLen,
                                        mclTendonSlackLen, mclPennAng);
     muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
@@ -95,36 +91,39 @@ Model buildWrappingModel(const testCase& tc) {
     model.addForce(springToRight);
 
 
+//    std::vector<double> cylLoc = {-0.1, 0.1};
+//    std::vector<std::string> cylQuad  = {"+y", "+y"};
+//    std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
+//    std::vector<double> cylLoc = {-0.2, 0.0, 0.2};
+//    std::vector<std::string> cylQuad  = {"+y", "-y", "+y"};
+//    std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
+    std::vector<double> cylLoc = {-0.3, -0.1, -0.1, 0.1, 0.1, 0.3};
+    std::vector<std::string> cylQuad  = {"+y", "-y", "-x", "+x", "-y", "+y"};
+    double ch = tc.CYLINDER_HEIGHT;
+    std::vector<double> cylHeight = {ch, ch, ch+0.2, ch+0.2, ch, ch};
+    for (int i=0; i<cylLoc.size(); i++){
+        auto wrappingFrame1 = new PhysicalOffsetFrame("wrappingFrame1", model.getGround(),
+                                                      SimTK::Transform(Vec3(cylLoc[i], cylHeight[i], 0)));
+        auto wrapSurface = new WrapCylinder();
 
-    // WRAPPING SURFACE
-    auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
-                                                 SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
-    // Add the wrapping surface
-    auto wrapSurface = new WrapCylinder();
-//    auto wrapSurface = new WrapEllipsoid();
-    wrapSurface->setAllPropertiesUseDefault(true);
-    wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-    wrapSurface->set_length(1);
-//    wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
-    wrapSurface->set_xyz_body_rotation(Vec3(tc.CYLINDER_ROT[0], tc.CYLINDER_ROT[1], tc.CYLINDER_ROT[2]));
-    wrapSurface->set_quadrant("+y");
+        wrapSurface->setAllPropertiesUseDefault(true);
+        wrapSurface->set_radius(tc.CYLINDER_RADIUS);
+        wrapSurface->set_length(1);
+        wrapSurface->set_xyz_body_rotation(Vec3(tc.CYLINDER_ROT[0], tc.CYLINDER_ROT[1], tc.CYLINDER_ROT[2]));
+        wrapSurface->set_quadrant(cylQuad[i]);
 
+        wrapSurface->setName(&"wrapSurface"[i]);
+        wrappingFrame1->addWrapObject(wrapSurface);
+        bodyGround->addComponent(wrappingFrame1);
 
-    wrapSurface->setName("wrapSurface");
-    wrappingFrame->addWrapObject(wrapSurface);
-    bodyGround->addComponent(wrappingFrame);
-
-    // Configure the vastus muscle to wrap over the patella.
-    muscle->updGeometryPath().addPathWrap(*wrapSurface);
-
-
+        muscle->updGeometryPath().addPathWrap(*wrapSurface);
+    }
 
     // CONTROLLER
     auto brain = new PrescribedController();
     brain->setActuators(model.updActuators());
-//    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
+    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
 //    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 1.0, 0.0, 0.5, 0.0};
-    double t[1] = {0.0}, x[1] = {0.0};
     auto controlFunction = new PiecewiseConstantFunction(5, t, x);
     brain->prescribeControlForActuator("muscle", controlFunction);
     model.addController(brain);
