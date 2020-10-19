@@ -160,6 +160,7 @@ Model buildWrappingModelDouble(const testCase& tc) {
 
     if (showVisualizer)
         model.setUseVisualizer(true);
+//    viz.setMode(SimTK::Visualizer::RealTime);
 
     return model;
 }

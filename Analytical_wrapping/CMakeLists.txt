@@ -1,6 +1,6 @@
 add_executable(test_suite
         test_suite.cpp
-        #buildModel.cpp
+        buildModel.cpp
         #buildModelPathPoints.cpp
         #buildModelHorizontal.cpp
         buildModelDouble.cpp

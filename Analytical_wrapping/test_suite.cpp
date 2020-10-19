@@ -109,12 +109,6 @@ double test(const testCase& tc) {
 //    auto model = buildWrappingModel(tc);
     auto model = buildWrappingModelDouble(tc);
 
-//    model.printSubcomponentInfo();
-//    model.printSubcomponentInfo<Joint>();
-//    model.finalizeConnections();
-//    model.print("model.osim");
-//    addConsole(model, tc);
-
     // Add table for result processing
     auto table = new TableReporter();
     table->setName("wrapping_results_table");
@@ -129,7 +123,7 @@ double test(const testCase& tc) {
 
     // time the simulation
     clock_t ticks = clock();
-    simulate(model, x0, tc.FINAL_TIME,true);
+    simulate(model, x0, tc.FINAL_TIME, true);
     ticks = clock() - ticks;
     double runTime = (float)ticks/CLOCKS_PER_SEC;
     std::cout << "Execution time: " <<
@@ -176,3 +170,32 @@ double test(const testCase& tc) {
     }
     return runTime;
 }
+
+
+
+
+
+//    model.printSubcomponentInfo();
+//    model.printSubcomponentInfo<Joint>();
+//    model.finalizeConnections();
+//    model.print("model.osim");
+//    addConsole(model, tc);
+
+
+
+// this gets recreated every function call
+//std::vector<int> results;
+//results.clear();
+//
+//for (int i=0; i<100; ++i){
+//results.push_back(i);
+//}
+// improve:
+//static std::vector<int> results;
+//results.clear();
+//
+//for (int i=0; i<100; ++i){
+//    results.push_back(i);
+//}
+// here using static runs the risk of crashing when two function calls to the same function
+//thread_local std::vector<int> results // which is now thread-safe
