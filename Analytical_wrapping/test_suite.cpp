@@ -35,9 +35,9 @@ using OpenSim::ConsoleReporter;
 using SimTK::Vec3;
 using OpenSim::Exception;
 
-Model buildWrappingModel(const testCase& tc);
-Model buildWrappingModelPathPoints(const testCase& tc, bool moving);
-Model buildWrappingModelHorizontal(const testCase& tc);
+//Model buildWrappingModel(const testCase& tc);
+//Model buildWrappingModelPathPoints(const testCase& tc, bool moving);
+//Model buildWrappingModelHorizontal(const testCase& tc);
 Model buildWrappingModelDouble(const testCase& tc);
 
 void addConsole(Model& model, const testCase& tc){
@@ -106,8 +106,8 @@ double test(const testCase& tc) {
 
 //    auto model = buildWrappingModelHorizontal(tc);
 //    auto model = buildWrappingModelPathPoints(tc, false);
-    auto model = buildWrappingModel(tc);
-//    auto model = buildWrappingModelDouble(tc);
+//    auto model = buildWrappingModel(tc);
+    auto model = buildWrappingModelDouble(tc);
 
 //    model.printSubcomponentInfo();
 //    model.printSubcomponentInfo<Joint>();

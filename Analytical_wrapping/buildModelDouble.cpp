@@ -32,7 +32,7 @@ Model buildWrappingModelDouble(const testCase& tc) {
 
 
     // BODIES
-    double bodyMass = 30.0;
+    double bodyMass = tc.BODY_MASS;
     double bodySideLength = tc.BODY_SIZE;
     auto bodyInertia = bodyMass * Inertia::brick(Vec3(bodySideLength / 2.));
     auto bodyLeft = new Body("bodyLeft", bodyMass, Vec3(0), bodyInertia);
@@ -47,7 +47,8 @@ Model buildWrappingModelDouble(const testCase& tc) {
     // Attach the pelvis to ground with a vertical slider joint, and attach the
     // pelvis, thigh, and shank bodies to each other with pin joints.
     Vec3 sliderOrientation(0, 0, SimTK::Pi / 2.);
-    Vec3 bodyOffset(tc.BODY_OFFSET, 0, 0);
+//    Vec3 bodyOffset(tc.BODY_OFFSET, 0, 0);
+    Vec3 bodyOffset(1+floor(tc.CYLINDER_COUNT/2)*0.2,0,0);
     auto sliderLeft = new SliderJoint("sliderLeft", model.getGround(), bodyOffset,
                                       sliderOrientation, *bodyLeft, Vec3(0), sliderOrientation);
     auto sliderRight = new SliderJoint("sliderRight", model.getGround(), -bodyOffset,
@@ -64,16 +65,19 @@ Model buildWrappingModelDouble(const testCase& tc) {
     auto &sliderCoordLeft =
             sliderLeft->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordLeft.setName("yCoordSliderLeft");
-    sliderCoordLeft.setDefaultValue(0.5);
+    sliderCoordLeft.setDefaultValue(tc.BODY_HEIGHT);
     auto &sliderCoordRight =
             sliderRight->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordRight.setName("yCoordSliderRight");
-    sliderCoordRight.setDefaultValue(0.5);
+    sliderCoordRight.setDefaultValue(tc.BODY_HEIGHT);
 
 
 
     // MUSCLES AND SPRINGS
-    double mclFmax = 6000., mclOptFibLen = 1.00, mclTendonSlackLen = 0.5, mclPennAng = 0.0;
+    double mclFmax = tc.MUSCLE_MAX_FORCE;
+    double mclOptFibLen = tc.OPT_FIBER_LENGTH;
+    double mclTendonSlackLen = tc.TENDON_SLACK_LENGTH;
+    double mclPennAng = 0.;
     auto muscle = new Thelen2003Muscle("muscle", mclFmax, mclOptFibLen,
                                        mclTendonSlackLen, mclPennAng);
     muscle->addNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
@@ -90,19 +94,35 @@ Model buildWrappingModelDouble(const testCase& tc) {
     model.addForce(springToLeft);
     model.addForce(springToRight);
 
+    std::vector<double> cylLoc(tc.CYLINDER_COUNT);
+    std::vector<std::string> cylQuad(tc.CYLINDER_COUNT);
+    std::vector<double> cylHeight(tc.CYLINDER_COUNT, tc.CYLINDER_HEIGHT);
+    if (tc.CYLINDER_COUNT%2 != 0) {
+        for (int i = 0; i < tc.CYLINDER_COUNT; i++) {
+            cylLoc[i] = -floor(tc.CYLINDER_COUNT / 2) * 0.2 + i * 0.2;
+            if (i % 2 == 0) {
+                cylQuad[i] = "+y";
+            } else {
+                cylQuad[i] = "-y";
+            }
+        }
+    } else {
+//        delete *cylLoc, *cylQuad, *cylHeight;
+//        std::vector<double> cylLoc = {-0.1, 0.1};
+//        std::vector<std::string> cylQuad  = {"+y", "+y"};
+//        std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
+//        std::vector<double> cylLoc = {-0.2, 0.0, 0.2};
+//        std::vector<std::string> cylQuad  = {"+y", "-y", "+y"};
+//        std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
+//        std::vector<double> cylLoc = {-0.3, -0.1, -0.1, 0.1, 0.1, 0.3};
+//        std::vector<std::string> cylQuad  = {"+y", "-y", "-x", "+x", "-y", "+y"};
+//        double ch = tc.CYLINDER_HEIGHT;
+//        std::vector<double> cylHeight = {ch, ch, ch+0.2, ch+0.2, ch, ch};
+    }
 
-//    std::vector<double> cylLoc = {-0.1, 0.1};
-//    std::vector<std::string> cylQuad  = {"+y", "+y"};
-//    std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
-//    std::vector<double> cylLoc = {-0.2, 0.0, 0.2};
-//    std::vector<std::string> cylQuad  = {"+y", "-y", "+y"};
-//    std::vector<double> cylHeight(cylLoc.size(),tc.CYLINDER_HEIGHT);
-    std::vector<double> cylLoc = {-0.3, -0.1, -0.1, 0.1, 0.1, 0.3};
-    std::vector<std::string> cylQuad  = {"+y", "-y", "-x", "+x", "-y", "+y"};
-    double ch = tc.CYLINDER_HEIGHT;
-    std::vector<double> cylHeight = {ch, ch, ch+0.2, ch+0.2, ch, ch};
+
     for (int i=0; i<cylLoc.size(); i++){
-        auto wrappingFrame1 = new PhysicalOffsetFrame("wrappingFrame1", model.getGround(),
+        auto wrappingFrame1 = new PhysicalOffsetFrame(&"wrappingFrame"[i], model.getGround(),
                                                       SimTK::Transform(Vec3(cylLoc[i], cylHeight[i], 0)));
         auto wrapSurface = new WrapCylinder();
 
@@ -122,8 +142,9 @@ Model buildWrappingModelDouble(const testCase& tc) {
     // CONTROLLER
     auto brain = new PrescribedController();
     brain->setActuators(model.updActuators());
-    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
+//    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 0.3, 0.0, 0.3, 0.0};
 //    double t[5] = {0.0, 1.0, 2.0, 3.0, 4.0}, x[5] = {0.0, 1.0, 0.0, 0.5, 0.0};
+    double t[1] = {0.0}, x[1] = {0.0};
     auto controlFunction = new PiecewiseConstantFunction(5, t, x);
     brain->prescribeControlForActuator("muscle", controlFunction);
     model.addController(brain);
