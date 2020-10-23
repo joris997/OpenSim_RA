@@ -38,3 +38,4 @@ target_compile_options(common_options_target INTERFACE
 add_subdirectory(Analytical_wrapping)
 add_subdirectory(Wrapping_surfaces)
 add_subdirectory(Cables)
+add_subdirectory(Wrapping_speed)
