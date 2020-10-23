@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles/progress.marks
-	$(MAKE) -f CMakeFiles/Makefile2 all
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/CMakeFiles/progress.marks
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	$(MAKE) -f CMakeFiles/Makefile2 clean
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,70 +97,60 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	$(MAKE) -f CMakeFiles/Makefile2 preinstall
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
-#=============================================================================
-# Target rules for targets named testSuite
+# Convenience name for target.
+Wrapping_cables/CMakeFiles/Cables_test.dir/rule:
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/CMakeFiles/Cables_test.dir/rule
+.PHONY : Wrapping_cables/CMakeFiles/Cables_test.dir/rule
 
-# Build rule for target.
-testSuite: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 testSuite
-.PHONY : testSuite
+# Convenience name for target.
+Cables_test: Wrapping_cables/CMakeFiles/Cables_test.dir/rule
 
-# fast build rule for target.
-testSuite/fast:
-	$(MAKE) -f Wrapping_analytical/CMakeFiles/testSuite.dir/build.make Wrapping_analytical/CMakeFiles/testSuite.dir/build
-.PHONY : testSuite/fast
-
-#=============================================================================
-# Target rules for targets named exampleHopperDevice
-
-# Build rule for target.
-exampleHopperDevice: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 exampleHopperDevice
-.PHONY : exampleHopperDevice
-
-# fast build rule for target.
-exampleHopperDevice/fast:
-	$(MAKE) -f Wrapping_surfaces/CMakeFiles/exampleHopperDevice.dir/build.make Wrapping_surfaces/CMakeFiles/exampleHopperDevice.dir/build
-.PHONY : exampleHopperDevice/fast
-
-#=============================================================================
-# Target rules for targets named Cables_test
-
-# Build rule for target.
-Cables_test: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 Cables_test
 .PHONY : Cables_test
 
 # fast build rule for target.
 Cables_test/fast:
-	$(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/build
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/build
 .PHONY : Cables_test/fast
 
-#=============================================================================
-# Target rules for targets named wrappingSpeed
+Cables_Simbody_demo.o: Cables_Simbody_demo.cpp.o
 
-# Build rule for target.
-wrappingSpeed: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 wrappingSpeed
-.PHONY : wrappingSpeed
+.PHONY : Cables_Simbody_demo.o
 
-# fast build rule for target.
-wrappingSpeed/fast:
-	$(MAKE) -f Wrapping_speed/CMakeFiles/wrappingSpeed.dir/build.make Wrapping_speed/CMakeFiles/wrappingSpeed.dir/build
-.PHONY : wrappingSpeed/fast
+# target to build an object file
+Cables_Simbody_demo.cpp.o:
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/Cables_Simbody_demo.cpp.o
+.PHONY : Cables_Simbody_demo.cpp.o
+
+Cables_Simbody_demo.i: Cables_Simbody_demo.cpp.i
+
+.PHONY : Cables_Simbody_demo.i
+
+# target to preprocess a source file
+Cables_Simbody_demo.cpp.i:
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/Cables_Simbody_demo.cpp.i
+.PHONY : Cables_Simbody_demo.cpp.i
+
+Cables_Simbody_demo.s: Cables_Simbody_demo.cpp.s
+
+.PHONY : Cables_Simbody_demo.s
+
+# target to generate assembly for a file
+Cables_Simbody_demo.cpp.s:
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/Cables_Simbody_demo.cpp.s
+.PHONY : Cables_Simbody_demo.cpp.s
 
 # Help Target
 help:
@@ -169,11 +159,11 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... edit_cache"
-	@echo "... testSuite"
-	@echo "... exampleHopperDevice"
 	@echo "... Cables_test"
-	@echo "... wrappingSpeed"
+	@echo "... edit_cache"
+	@echo "... Cables_Simbody_demo.o"
+	@echo "... Cables_Simbody_demo.i"
+	@echo "... Cables_Simbody_demo.s"
 .PHONY : help
 
 
@@ -185,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/none/Documents/cpp/OpenSim/OpenSim_RA/build && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

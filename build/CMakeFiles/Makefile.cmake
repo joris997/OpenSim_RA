@@ -7,9 +7,9 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "../Analytical_wrapping/CMakeLists.txt"
   "../CMakeLists.txt"
-  "../Cables/CMakeLists.txt"
+  "../Wrapping_analytical/CMakeLists.txt"
+  "../Wrapping_cables/CMakeLists.txt"
   "../Wrapping_speed/CMakeLists.txt"
   "../Wrapping_surfaces/CMakeLists.txt"
   "CMakeFiles/3.10.2/CMakeCCompiler.cmake"
@@ -63,16 +63,16 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
-  "Analytical_wrapping/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "Wrapping_analytical/CMakeFiles/CMakeDirectoryInformation.cmake"
   "Wrapping_surfaces/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "Cables/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "Wrapping_cables/CMakeFiles/CMakeDirectoryInformation.cmake"
   "Wrapping_speed/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "Analytical_wrapping/CMakeFiles/testSuite.dir/DependInfo.cmake"
+  "Wrapping_analytical/CMakeFiles/testSuite.dir/DependInfo.cmake"
   "Wrapping_surfaces/CMakeFiles/exampleHopperDevice.dir/DependInfo.cmake"
-  "Cables/CMakeFiles/Cables_test.dir/DependInfo.cmake"
+  "Wrapping_cables/CMakeFiles/Cables_test.dir/DependInfo.cmake"
   "Wrapping_speed/CMakeFiles/wrappingSpeed.dir/DependInfo.cmake"
   )

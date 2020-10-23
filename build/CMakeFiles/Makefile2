@@ -60,57 +60,57 @@ CMAKE_SOURCE_DIR = /home/none/Documents/cpp/OpenSim/OpenSim_RA
 CMAKE_BINARY_DIR = /home/none/Documents/cpp/OpenSim/OpenSim_RA/build
 
 #=============================================================================
-# Directory level rules for directory Analytical_wrapping
+# Directory level rules for directory Wrapping_analytical
 
 # Convenience name for "all" pass in the directory.
-Analytical_wrapping/all: Analytical_wrapping/CMakeFiles/testSuite.dir/all
+Wrapping_analytical/all: Wrapping_analytical/CMakeFiles/testSuite.dir/all
 
-.PHONY : Analytical_wrapping/all
+.PHONY : Wrapping_analytical/all
 
 # Convenience name for "clean" pass in the directory.
-Analytical_wrapping/clean: Analytical_wrapping/CMakeFiles/testSuite.dir/clean
+Wrapping_analytical/clean: Wrapping_analytical/CMakeFiles/testSuite.dir/clean
 
-.PHONY : Analytical_wrapping/clean
+.PHONY : Wrapping_analytical/clean
 
 # Convenience name for "preinstall" pass in the directory.
-Analytical_wrapping/preinstall:
+Wrapping_analytical/preinstall:
 
-.PHONY : Analytical_wrapping/preinstall
+.PHONY : Wrapping_analytical/preinstall
 
 #=============================================================================
-# Target rules for target Analytical_wrapping/CMakeFiles/testSuite.dir
+# Target rules for target Wrapping_analytical/CMakeFiles/testSuite.dir
 
 # All Build rule for target.
-Analytical_wrapping/CMakeFiles/testSuite.dir/all:
-	$(MAKE) -f Analytical_wrapping/CMakeFiles/testSuite.dir/build.make Analytical_wrapping/CMakeFiles/testSuite.dir/depend
-	$(MAKE) -f Analytical_wrapping/CMakeFiles/testSuite.dir/build.make Analytical_wrapping/CMakeFiles/testSuite.dir/build
+Wrapping_analytical/CMakeFiles/testSuite.dir/all:
+	$(MAKE) -f Wrapping_analytical/CMakeFiles/testSuite.dir/build.make Wrapping_analytical/CMakeFiles/testSuite.dir/depend
+	$(MAKE) -f Wrapping_analytical/CMakeFiles/testSuite.dir/build.make Wrapping_analytical/CMakeFiles/testSuite.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles --progress-num=6,7,8,9,10 "Built target testSuite"
-.PHONY : Analytical_wrapping/CMakeFiles/testSuite.dir/all
+.PHONY : Wrapping_analytical/CMakeFiles/testSuite.dir/all
 
 # Include target in all.
-all: Analytical_wrapping/CMakeFiles/testSuite.dir/all
+all: Wrapping_analytical/CMakeFiles/testSuite.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-Analytical_wrapping/CMakeFiles/testSuite.dir/rule: cmake_check_build_system
+Wrapping_analytical/CMakeFiles/testSuite.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles 5
-	$(MAKE) -f CMakeFiles/Makefile2 Analytical_wrapping/CMakeFiles/testSuite.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 Wrapping_analytical/CMakeFiles/testSuite.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles 0
-.PHONY : Analytical_wrapping/CMakeFiles/testSuite.dir/rule
+.PHONY : Wrapping_analytical/CMakeFiles/testSuite.dir/rule
 
 # Convenience name for target.
-testSuite: Analytical_wrapping/CMakeFiles/testSuite.dir/rule
+testSuite: Wrapping_analytical/CMakeFiles/testSuite.dir/rule
 
 .PHONY : testSuite
 
 # clean rule for target.
-Analytical_wrapping/CMakeFiles/testSuite.dir/clean:
-	$(MAKE) -f Analytical_wrapping/CMakeFiles/testSuite.dir/build.make Analytical_wrapping/CMakeFiles/testSuite.dir/clean
-.PHONY : Analytical_wrapping/CMakeFiles/testSuite.dir/clean
+Wrapping_analytical/CMakeFiles/testSuite.dir/clean:
+	$(MAKE) -f Wrapping_analytical/CMakeFiles/testSuite.dir/build.make Wrapping_analytical/CMakeFiles/testSuite.dir/clean
+.PHONY : Wrapping_analytical/CMakeFiles/testSuite.dir/clean
 
 # clean rule for target.
-clean: Analytical_wrapping/CMakeFiles/testSuite.dir/clean
+clean: Wrapping_analytical/CMakeFiles/testSuite.dir/clean
 
 .PHONY : clean
 
@@ -170,57 +170,57 @@ clean: Wrapping_surfaces/CMakeFiles/exampleHopperDevice.dir/clean
 .PHONY : clean
 
 #=============================================================================
-# Directory level rules for directory Cables
+# Directory level rules for directory Wrapping_cables
 
 # Convenience name for "all" pass in the directory.
-Cables/all: Cables/CMakeFiles/Cables_test.dir/all
+Wrapping_cables/all: Wrapping_cables/CMakeFiles/Cables_test.dir/all
 
-.PHONY : Cables/all
+.PHONY : Wrapping_cables/all
 
 # Convenience name for "clean" pass in the directory.
-Cables/clean: Cables/CMakeFiles/Cables_test.dir/clean
+Wrapping_cables/clean: Wrapping_cables/CMakeFiles/Cables_test.dir/clean
 
-.PHONY : Cables/clean
+.PHONY : Wrapping_cables/clean
 
 # Convenience name for "preinstall" pass in the directory.
-Cables/preinstall:
+Wrapping_cables/preinstall:
 
-.PHONY : Cables/preinstall
+.PHONY : Wrapping_cables/preinstall
 
 #=============================================================================
-# Target rules for target Cables/CMakeFiles/Cables_test.dir
+# Target rules for target Wrapping_cables/CMakeFiles/Cables_test.dir
 
 # All Build rule for target.
-Cables/CMakeFiles/Cables_test.dir/all:
-	$(MAKE) -f Cables/CMakeFiles/Cables_test.dir/build.make Cables/CMakeFiles/Cables_test.dir/depend
-	$(MAKE) -f Cables/CMakeFiles/Cables_test.dir/build.make Cables/CMakeFiles/Cables_test.dir/build
+Wrapping_cables/CMakeFiles/Cables_test.dir/all:
+	$(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/depend
+	$(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles --progress-num=1,2 "Built target Cables_test"
-.PHONY : Cables/CMakeFiles/Cables_test.dir/all
+.PHONY : Wrapping_cables/CMakeFiles/Cables_test.dir/all
 
 # Include target in all.
-all: Cables/CMakeFiles/Cables_test.dir/all
+all: Wrapping_cables/CMakeFiles/Cables_test.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-Cables/CMakeFiles/Cables_test.dir/rule: cmake_check_build_system
+Wrapping_cables/CMakeFiles/Cables_test.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles 2
-	$(MAKE) -f CMakeFiles/Makefile2 Cables/CMakeFiles/Cables_test.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 Wrapping_cables/CMakeFiles/Cables_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/none/Documents/cpp/OpenSim/OpenSim_RA/build/CMakeFiles 0
-.PHONY : Cables/CMakeFiles/Cables_test.dir/rule
+.PHONY : Wrapping_cables/CMakeFiles/Cables_test.dir/rule
 
 # Convenience name for target.
-Cables_test: Cables/CMakeFiles/Cables_test.dir/rule
+Cables_test: Wrapping_cables/CMakeFiles/Cables_test.dir/rule
 
 .PHONY : Cables_test
 
 # clean rule for target.
-Cables/CMakeFiles/Cables_test.dir/clean:
-	$(MAKE) -f Cables/CMakeFiles/Cables_test.dir/build.make Cables/CMakeFiles/Cables_test.dir/clean
-.PHONY : Cables/CMakeFiles/Cables_test.dir/clean
+Wrapping_cables/CMakeFiles/Cables_test.dir/clean:
+	$(MAKE) -f Wrapping_cables/CMakeFiles/Cables_test.dir/build.make Wrapping_cables/CMakeFiles/Cables_test.dir/clean
+.PHONY : Wrapping_cables/CMakeFiles/Cables_test.dir/clean
 
 # clean rule for target.
-clean: Cables/CMakeFiles/Cables_test.dir/clean
+clean: Wrapping_cables/CMakeFiles/Cables_test.dir/clean
 
 .PHONY : clean
 

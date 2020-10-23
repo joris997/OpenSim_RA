@@ -35,7 +35,7 @@ target_compile_options(common_options_target INTERFACE
   "$<$<CXX_COMPILER_ID:GNU>:-Wno-unknown-pragmas>"
   "$<$<CXX_COMPILER_ID:Clang>:-Wno-unknown-pragmas>")
 
-add_subdirectory(Analytical_wrapping)
+add_subdirectory(Wrapping_analytical)
 add_subdirectory(Wrapping_surfaces)
-add_subdirectory(Cables)
+add_subdirectory(Wrapping_cables)
 add_subdirectory(Wrapping_speed)

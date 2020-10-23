@@ -5,7 +5,7 @@
 		<Option title="OpenSim_RA"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\opensim-core\;CMake Files\..\..\..\..\opensim-core\lib\;CMake Files\..\..\..\..\opensim-core\lib\cmake\;CMake Files\..\..\..\..\opensim-core\lib\cmake\OpenSim\;CMake Files\..\..\..\..\opensim-core\lib\cmake\simbody\;CMake Files\..\..\..\..\opensim-core\lib\spdlog\;CMake Files\..\..\..\..\opensim-core\lib\spdlog\cmake\;CMake Files\Analytical_wrapping\;CMake Files\Wrapping_surfaces\;CMake Files\Cables\;CMake Files\Wrapping_speed\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\opensim-core\;CMake Files\..\..\..\..\opensim-core\lib\;CMake Files\..\..\..\..\opensim-core\lib\cmake\;CMake Files\..\..\..\..\opensim-core\lib\cmake\OpenSim\;CMake Files\..\..\..\..\opensim-core\lib\cmake\simbody\;CMake Files\..\..\..\..\opensim-core\lib\spdlog\;CMake Files\..\..\..\..\opensim-core\lib\spdlog\cmake\;CMake Files\Wrapping_analytical\;CMake Files\Wrapping_surfaces\;CMake Files\Wrapping_cables\;CMake Files\Wrapping_speed\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/none/Documents/cpp/OpenSim/OpenSim_RA/build"/>
@@ -58,10 +58,10 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 testSuite"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 testSuite"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="testSuite/fast">
@@ -85,10 +85,10 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 testSuite/fast"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Analytical_wrapping/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 testSuite/fast"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_analytical/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="exampleHopperDevice">
@@ -166,10 +166,10 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 Cables_test"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 Cables_test"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Cables_test/fast">
@@ -193,10 +193,10 @@
 					<Add directory="/usr/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 Cables_test/fast"/>
-					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Cables/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 Cables_test/fast"/>
+					<CompileFile command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j6 -f &quot;/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Wrapping_cables/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="wrappingSpeed">
@@ -254,22 +254,22 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/analyticalSolution.cpp">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/analyticalSolution.cpp">
 			<Option target="testSuite"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/analyticalSolution.h">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/analyticalSolution.h">
 			<Option target="testSuite"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/buildModel.cpp">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/buildModel.cpp">
 			<Option target="testSuite"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/buildModelDouble.cpp">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/buildModelDouble.cpp">
 			<Option target="testSuite"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/main.cpp">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/main.cpp">
 			<Option target="testSuite"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Cables/Cables_Simbody_demo.cpp">
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_cables/Cables_Simbody_demo.cpp">
 			<Option target="Cables_test"/>
 		</Unit>
 		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_speed/buildModel.cpp">
@@ -323,14 +323,14 @@
 		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/../../../../opensim-core/lib/spdlog/cmake/spdlogConfigVersion.cmake">
 			<Option virtualFolder="CMake Files\..\..\..\..\opensim-core\lib\spdlog\cmake\"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Analytical_wrapping/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\Analytical_wrapping\"/>
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_analytical/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Wrapping_analytical\"/>
 		</Unit>
 		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_surfaces/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\Wrapping_surfaces\"/>
 		</Unit>
-		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Cables/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\Cables\"/>
+		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_cables/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Wrapping_cables\"/>
 		</Unit>
 		<Unit filename="/home/none/Documents/cpp/OpenSim/OpenSim_RA/Wrapping_speed/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\Wrapping_speed\"/>
