@@ -32,10 +32,10 @@ static const char cylinder_radius_arg[] = "--cylinder_radius=";
 static const char stiffness_arg[] = "--stiffness=";
 static const char dissipation_arg[] = "--dissipation=";
 static const char body_mass_arg[] = "--body_mass=";
+static const char body_mass_factor_arg[] = "--body_mass_factor=";
 static const char cylinder_rotation_arg[] = "--cylinder_rotation=";
 static const char wrapping_body_type_arg[] = "--type=";
-
-std::ofstream outputFile("../Analytical_wrapping_test/output/outputFile.txt");
+static const char final_time_arg[] = "--final_time=";
 
 using OpenSim::Exception;
 using OpenSim::Model;
@@ -43,7 +43,9 @@ using OpenSim::ConsoleReporter;
 using SimTK::Vec3;
 
 Model buildWrappingModel(const testCase& tc);
+int test(const testCase& tc);
 
+// add a console to the model that can then be printed during simulation
 void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
@@ -100,10 +102,23 @@ void commandLineArguments(testCase& tc, int argc, char** argv){
             char* end;
             tc.BODY_MASS = strtod(val, &end);
         }
+        // body mass factor
+        else if (strncmp(arg,body_mass_factor_arg,sizeof(body_mass_factor_arg)-1)==0){
+            char const* val = arg + (sizeof(body_mass_factor_arg)-1);
+            char* end;
+            tc.BODY_MASS_FACTOR = strtod(val, &end);
+        }
+        // time for simulation
+        else if (strncmp(arg,final_time_arg,sizeof(final_time_arg)-1)==0){
+            char const* val = arg + (sizeof(final_time_arg)-1);
+            char* end;
+            tc.FINAL_TIME = strtod(val, &end);
+        }
+        else {
+            std::cout << "Unknown argument '" << arg << "'" << std::endl;
+        }
     }
 }
-
-int test(const testCase& tc);
 
 int main(int argc, char** argv) {
     // Create test cases;

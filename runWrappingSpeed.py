@@ -6,11 +6,11 @@ from subprocess import Popen, PIPE
 
 
 def parse_output(raw_output):
+    springLength = []
     for word in raw_output.decode('utf-8').split('\n'):
         try:
             var = float(word.strip())
         except:
-            springLength = []
             for char in word.split('\t')[:-2]:
                 springLength.append(float(char.strip()))
 
@@ -18,11 +18,12 @@ def parse_output(raw_output):
     return springLength
 
 
-def general_loop(variable,loopRange,nTimes,isVec,showVisualizer=False):
+def general_loop(variable,loopRange,nTimes,isVec,showVisualizer=False,plotLength=False):
     totalCases = len(loopRange)
     totalRuns = totalCases*nTimes
 
     runTimes = []
+    maxSpringLength = []
     for i in range(len(loopRange)):
         instance = loopRange[i]
 
@@ -38,7 +39,11 @@ def general_loop(variable,loopRange,nTimes,isVec,showVisualizer=False):
         if showVisualizer:
             args += " --visualizer"
 
+        simTime = 5.0;
+        args += " --final_time="+str(simTime)
+
         tDelta = 0
+        maxLength = 0
         for ii in range(0,nTimes):
             p = Popen(args,shell=True,stdout=PIPE)
 
@@ -47,32 +52,40 @@ def general_loop(variable,loopRange,nTimes,isVec,showVisualizer=False):
             tDelta += time.time() - t0
 
             percentage = round((i*nTimes+ii)/totalRuns*100)
-            print("[",percentage,"%] Runtime with",str(variable),"=",str(round(instance,5)),":",round(time.time()-t0,5))
+            print("[",percentage,"%] Runtime with",str(variable),"=", \
+                str(round(instance,5)),":",round(time.time()-t0,5))
 
-            springLength = parse_output(output)
+            maxLength += max(parse_output(output))
 
         runTimes.append(tDelta/nTimes)
+        maxSpringLength.append(maxLength/nTimes)
 
-    plt.plot(loopRange,runTimes)
-    plt.xlabel(str(variable))
-    plt.ylabel("runtime [s]")
+    fig,ax1 = plt.subplots()
+
+    color1 = 'tab:red'
+    color2 = 'tab:blue'
+
+    ax1.plot(loopRange,runTimes,color=color1)
+    ax1.set_xlabel(str(variable))
+    ax1.set_ylabel("runtime [s]",color=color1)
+    ax1.tick_params(axis='y',labelcolor=color1)
+
+    if plotLength:
+        ax2 = ax1.twinx()
+        ax2.plot(loopRange,maxSpringLength,color=color2)
+        ax2.set_ylabel("max spring length [m]",color=color2)
+        ax2.tick_params(axis='y',labelcolor=color2)
+
     plt.show()
 
 
 def main():
-    rotationArray = np.linspace(0,1,10)
+    rotationArray = np.linspace(1,1.2,10)
 #    rotationArray = np.linspace(10,5000,250)
-    variable = "cylinder_rotation"
+    variable = "body_mass_factor"
     nTimes = 10
-    isVec = 2
+    isVec = 0
     general_loop(variable,rotationArray,nTimes,isVec)
-
-#    isVec = 1
-#    general_loop(variable,rotationArray,nTimes,isVec)
-#    isVec = 2
-#    general_loop(variable,rotationArray,nTimes,isVec)
-#    isVec = 3
-#    general_loop(variable,rotationArray,nTimes,isVec)
 
 
 if __name__ == "__main__":

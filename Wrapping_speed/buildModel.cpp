@@ -32,13 +32,15 @@ Model buildWrappingModel(const testCase& tc) {
 
 
     // BODIES
-    double bodyMass = 30.0;
+    double bodyMass1 = tc.BODY_MASS;
+    double bodyMass2 = tc.BODY_MASS*tc.BODY_MASS_FACTOR;
     double bodySideLength = tc.BODY_SIZE;
-    auto bodyInertia = bodyMass * Inertia::brick(Vec3(bodySideLength / 2.));
-    auto bodyLeft = new Body("bodyLeft", bodyMass, Vec3(0), bodyInertia);
-    auto bodyRight = new Body("bodyRight", bodyMass, Vec3(0), bodyInertia);
+    auto bodyInertia1 = bodyMass1 * Inertia::brick(Vec3(bodySideLength / 2.));
+    auto bodyInertia2 = bodyMass2 * Inertia::brick(Vec3(bodySideLength / 2.));
+    auto bodyLeft = new Body("bodyLeft", bodyMass1, Vec3(0), bodyInertia1);
+    auto bodyRight = new Body("bodyRight", bodyMass2, Vec3(0), bodyInertia2);
     // Create static ground body for wrapping surface frame
-    auto bodyGround = new Body("bodyGround", 1, Vec3(0), bodyInertia);
+    auto bodyGround = new Body("bodyGround", 1, Vec3(0), bodyInertia1);
 
     model.addBody(bodyLeft);
     model.addBody(bodyRight);

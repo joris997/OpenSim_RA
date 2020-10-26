@@ -22,6 +22,7 @@ struct testCase {
     double MUSCLE_MAX_FORCE    { 6000.0 };      // was 4000.0
     // Sliding body parameters
     double BODY_MASS           { 10.0 };
+    double BODY_MASS_FACTOR    { 1.0 };
     double BODY_SIZE           { 0.1 };
     double BODY_HEIGHT         { 1.08-0.05 };
     double BODY_OFFSET         { 0.5 };         // { 0.08+0.00001 };
