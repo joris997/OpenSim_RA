@@ -35,3 +35,4 @@
 # MANUALLY ADDED
 *.user
 opensim.log
+/build
