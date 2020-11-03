@@ -122,10 +122,6 @@ Model buildWrappingModel(const testCase& tc) {
 }
 
 
-
-
-
-
 /*
 auto system = SimTK::MultibodySystem{};
 auto forces = SimTK::GeneralForceSubsystem{system};

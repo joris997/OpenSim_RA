@@ -36,6 +36,7 @@ target_compile_options(common_options_target INTERFACE
   "$<$<CXX_COMPILER_ID:Clang>:-Wno-unknown-pragmas>")
 
 add_subdirectory(Wrapping_analytical)
-add_subdirectory(Wrapping_surfaces)
+add_subdirectory(Wrapping_surfaces/Hopper)
+add_subdirectory(Wrapping_surfaces/Ellipsoid_test)
 add_subdirectory(Wrapping_cables)
 add_subdirectory(Wrapping_speed)
