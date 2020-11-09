@@ -7,8 +7,8 @@
 
 struct testCase {
     // General parameters
-    bool   SHOW_VISUALIZER     { true };
-    double REPORTING_INTERVAL  { 0.05 };
+    bool   SHOW_VISUALIZER     { false };
+    double REPORTING_INTERVAL  { 0.01 };
     double FINAL_TIME          { 5.0 };
     int    DISCRETIZATION      { 6 };
     bool   PATH_POINTS         { true };

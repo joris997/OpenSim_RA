@@ -62,6 +62,7 @@ int main(int argc, char** argv) {
 */
 
 Model buildWrappingModel(const testCase& tc);
+Model buildWrappingModelOld(const testCase& tc);
 int test(const testCase& tc);
 
 // if this returns int and you check the value of the int you can analyze errors
@@ -157,8 +158,6 @@ int test(const testCase& tc) {
 
     auto model = buildWrappingModel(tc);
     model.finalizeConnections();
-//    model.printSubcomponentInfo();
-//    model.printSubcomponentInfo<Joint>();
 
     // Add table for result processing
     auto table = new TableReporter();
@@ -171,35 +170,39 @@ int test(const testCase& tc) {
     SimTK::State& x0 = model.initSystem();
 
     // time the simulation
-    simulate(model, x0, tc.FINAL_TIME, false);
+    simulate(model, x0, tc.FINAL_TIME, true);
 
     // convert spring length table result to vector of doubles
     bool testPass = true;
-    double margin = 0.0001;
+    double margin = 0.001;
     const auto length = table->getTable().getDependentColumnAtIndex(0);
     const auto position = table->getTable().getDependentColumnAtIndex(1);
     std::vector<double> lNumerical(length.size());
     std::vector<double> lAnalytical(length.size());
     std::vector<double> cylinderPosition(length.size());
+    std::vector<double> anglesTangent(length.size());
     for(int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
         lNumerical[i] = (double)length[i];
-        std::cout << lNumerical[i] << std::endl;
         cylinderPosition[i] = (double)position[i];
-        lAnalytical[i] = analyticalSolution(cylinderPosition[i],tc,false);
-        std::cout << lAnalytical[i] << std::endl;
-        if (lNumerical[i] > (1+margin)*lAnalytical[i]
-            || lNumerical[i] < (1-margin)*lAnalytical[i]){
+
+        double angleTangent;
+        lAnalytical[i] = analyticalSolution(cylinderPosition[i],tc,angleTangent);
+        (void)analyticalSolution(tc.S_AMPLITUDE,tc,angleTangent);
+        anglesTangent[i] = angleTangent;
+
+        if (lNumerical[i]-lAnalytical[i] < -margin ||
+                lNumerical[i]-lAnalytical[i] > margin){
             testPass = false;
         }
     }
 
-    // output the results
-    std::cout << tc.REPORTING_INTERVAL << std::endl;
-    std::cout << testPass << std::endl;
-    for (const auto &e : lNumerical){
-        std::cout << e << "\t";
-    }
-    std::cout << std::endl;
+//    // output the results
+//    std::cout << tc.REPORTING_INTERVAL << std::endl;
+//    std::cout << (double)testPass << std::endl;
+//    for (const auto &e : anglesTangent){
+//        std::cout << e << "\t";
+//    }
+//    std::cout << std::endl;
 
     return 0;
 }

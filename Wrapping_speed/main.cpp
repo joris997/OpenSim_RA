@@ -188,5 +188,5 @@ int test(const testCase& tc) {
     }
     std::cout << std::endl;
 
-    return 1;
+    return 0;
 }

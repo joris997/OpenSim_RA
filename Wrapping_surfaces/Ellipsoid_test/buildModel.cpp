@@ -20,24 +20,24 @@
 using namespace OpenSim;
 
 Model buildWrappingModel(const testCase& tc) {
-    bool showVisualizer = tc.SHOW_VISUALIZER;
     using SimTK::Vec3;
     using SimTK::Inertia;
 
     // Create a new OpenSim model
     auto model = Model();
-    model.setName("Normal_Wrapping");
+    model.setName("EllipsoidWrapping");
     model.setGravity(Vec3(0));
+    Ground& ground = model.updGround();
 
     // Create bodies for the top and bottom connection point
     double bodyMass = tc.BODY_MASS;
     double bodySideLength = tc.BODY_SIZE;
     auto inertia = bodyMass * Inertia::brick(Vec3(bodySideLength / 2.));
 
-    auto bodyTop = new Body("bodyTop",1,Vec3(0),inertia);
-    auto bodyBottom = new Body("bodyBottom",1,Vec3(0),inertia);
-    auto bodyGround = new Body("bodyGround",1,Vec3(0),inertia);
-    auto bodyWrapping = new Body("bodyWrapping",1,Vec3(0),inertia);
+    auto bodyTop = new Body("bodyTop",bodyMass,Vec3(0),inertia);
+    auto bodyBottom = new Body("bodyBottom",bodyMass,Vec3(0),inertia);
+    auto bodyGround = new Body("bodyGround",bodyMass,Vec3(0),inertia);
+    auto bodyWrapping = new Body("bodyWrapping",bodyMass,Vec3(0),inertia);
 
     model.addBody(bodyTop);
     model.addBody(bodyBottom);
@@ -47,11 +47,22 @@ Model buildWrappingModel(const testCase& tc) {
     // Attach the top and bottom bodies to the world with a weld joint
     auto bodyOffsetTop = Vec3(tc.CYLINDER_RADIUS,tc.BODY_OFFSET,0);
     auto bodyOffsetBottom = Vec3(tc.CYLINDER_RADIUS,-tc.BODY_OFFSET,0);
-    auto weldGround = new WeldJoint("weldTop", model.getGround(), *bodyGround);
+    auto weldGround = new WeldJoint("weldTop", ground, *bodyGround);
 
-    auto pinTop = new PinJoint("pinTop",*bodyGround,bodyOffsetTop,Vec3(0),
+    // I should be able to use pin joint as hinges. Now the model works for a
+    // cylinder or ellipsoid where the slider direction is perpendicular to the
+    // spring spanning direction but this is kinda hacky. Seems like there is something
+    // wrong with the PinJoint. Ask Ajay about this!
+//    Vec3 sliderRotation = Vec3(0, SimTK::Pi/2, 0);
+//    auto pinTop = new SliderJoint("pinTop",
+//                                  model.getGround(),bodyOffsetTop,sliderRotation,
+//                                  *bodyTop,Vec3(0),Vec3(0));
+//    auto pinBottom = new SliderJoint("pinBottom",
+//                                     model.getGround(),bodyOffsetBottom,sliderRotation,
+//                                     *bodyBottom,Vec3(0),Vec3(0));
+    auto pinTop = new PinJoint("pinTop",ground,bodyOffsetTop,Vec3(0),
                                         *bodyTop,Vec3(0),Vec3(0));
-    auto pinBottom = new PinJoint("pinBottom",*bodyGround,bodyOffsetBottom,Vec3(0),
+    auto pinBottom = new PinJoint("pinBottom",ground,bodyOffsetBottom,Vec3(0),
                                               *bodyBottom,Vec3(0),Vec3(0));
 
     // Add the joints to the model.
@@ -109,9 +120,8 @@ Model buildWrappingModel(const testCase& tc) {
     bodyWrappingGeometry->setColor(Vec3(0.1,0.8,0.1));
     bodyWrapping->attachGeometry(bodyWrappingGeometry);
 
-    if (showVisualizer) {
+    if (tc.SHOW_VISUALIZER) {
         model.setUseVisualizer(true);
     }
-
     return model;
 }

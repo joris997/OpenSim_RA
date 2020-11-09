@@ -1,0 +1,13 @@
+radius = 0.08;
+stiffness = 500;
+	ampl = 0.163
+	angle = 0.324
+stiffness = 1000;
+	ampl = 0.163
+	angle = 0.324
+
+
+radius = 0.16;
+stiffness = 500;
+	ampl = 0.163
+	angle = 0.324
