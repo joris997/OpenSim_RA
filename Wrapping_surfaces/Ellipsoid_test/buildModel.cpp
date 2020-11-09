@@ -60,9 +60,10 @@ Model buildWrappingModel(const testCase& tc) {
 //    auto pinBottom = new SliderJoint("pinBottom",
 //                                     model.getGround(),bodyOffsetBottom,sliderRotation,
 //                                     *bodyBottom,Vec3(0),Vec3(0));
-    auto pinTop = new PinJoint("pinTop",ground,bodyOffsetTop,Vec3(0),
+    auto pinJointOffset = Vec3(0,tc.BODY_OFFSET,0);
+    auto pinTop = new PinJoint("pinTop",ground,pinJointOffset,Vec3(0),
                                         *bodyTop,Vec3(0),Vec3(0));
-    auto pinBottom = new PinJoint("pinBottom",ground,bodyOffsetBottom,Vec3(0),
+    auto pinBottom = new PinJoint("pinBottom",ground,-pinJointOffset,Vec3(0),
                                               *bodyBottom,Vec3(0),Vec3(0));
 
     // Add the joints to the model.
