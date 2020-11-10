@@ -38,5 +38,6 @@ target_compile_options(common_options_target INTERFACE
 add_subdirectory(Wrapping_analytical)
 add_subdirectory(Wrapping_surfaces/Hopper)
 add_subdirectory(Wrapping_surfaces/Ellipsoid_test)
+add_subdirectory(Wrapping_surfaces/WrappingSurfaces)
 add_subdirectory(Wrapping_cables)
 add_subdirectory(Wrapping_speed)
