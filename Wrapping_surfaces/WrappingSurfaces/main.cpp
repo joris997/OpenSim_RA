@@ -43,22 +43,6 @@ using OpenSim::Model;
 using OpenSim::ConsoleReporter;
 using SimTK::Vec3;
 
-/*
-Model buildWrappingModel(const testCase& tc);
-int main(int argc, char** argv) {
-    using namespace OpenSim;
-
-    testCase tc;
-    auto model = buildWrappingModel(tc);
-    model.finalizeConnections();
-
-    SimTK::State& x0 = model.initSystem();
-
-    simulate(model, x0, tc.FINAL_TIME, true);
-
-    return 0;
-}
-*/
 
 Model buildWrappingModel(const testCase& tc);
 int test(const testCase& tc);

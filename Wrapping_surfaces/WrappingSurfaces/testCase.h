@@ -25,7 +25,7 @@ struct testCase {
     double BODY_MASS_FACTOR    { 1.0 };
     double BODY_SIZE           { 0.1 };
     double BODY_HEIGHT         { 1.08-0.05 };
-    double BODY_OFFSET         { 0.5 };
+    double BODY_OFFSET         { 1.0 };
     // Wrapping body parameters
     double CYLINDER_RADIUS     { 0.16 };
     double CYLINDER_HEIGHT     { -CYLINDER_RADIUS };
@@ -35,7 +35,7 @@ struct testCase {
     std::string WRAP_BODY_TYPE { "ellipsoid" };
 
     // sine
-    double S_AMPLITUDE         { 0.15 };
+    double S_AMPLITUDE         { 0.10 };
     double S_OMEGA             { 3.14 };
     double S_PHASE             { 0.00 };
 };

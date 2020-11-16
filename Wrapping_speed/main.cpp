@@ -36,6 +36,7 @@ static const char body_mass_factor_arg[] = "--body_mass_factor=";
 static const char cylinder_rotation_arg[] = "--cylinder_rotation=";
 static const char wrapping_body_type_arg[] = "--type=";
 static const char final_time_arg[] = "--final_time=";
+static const char amplitude_arg[] = "--amplitude=";
 
 using OpenSim::Exception;
 using OpenSim::Model;
@@ -78,6 +79,11 @@ void commandLineArguments(testCase& tc, int argc, char** argv){
                                        strtod(m[3].str().c_str(), &end)};
             }
         }
+        // wrap object type
+        else if (strncmp(arg,wrapping_body_type_arg,sizeof(wrapping_body_type_arg)-1)==0){
+            char const* val = arg + (sizeof(wrapping_body_type_arg)-1);
+            tc.WRAP_BODY_TYPE = val;
+        }
         // cylinder radius
         else if (strncmp(arg,cylinder_radius_arg,sizeof(cylinder_radius_arg)-1)==0){
             char const* val = arg + (sizeof(cylinder_radius_arg)-1);
@@ -95,18 +101,6 @@ void commandLineArguments(testCase& tc, int argc, char** argv){
             char const* val = arg + (sizeof(dissipation_arg)-1);
             char* end;
             tc.DISSIPATION = strtod(val, &end);
-        }
-        // body mass
-        else if (strncmp(arg,body_mass_arg,sizeof(body_mass_arg)-1)==0){
-            char const* val = arg + (sizeof(body_mass_arg)-1);
-            char* end;
-            tc.BODY_MASS = strtod(val, &end);
-        }
-        // body mass factor
-        else if (strncmp(arg,body_mass_factor_arg,sizeof(body_mass_factor_arg)-1)==0){
-            char const* val = arg + (sizeof(body_mass_factor_arg)-1);
-            char* end;
-            tc.BODY_MASS_FACTOR = strtod(val, &end);
         }
         // time for simulation
         else if (strncmp(arg,final_time_arg,sizeof(final_time_arg)-1)==0){

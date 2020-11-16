@@ -66,18 +66,20 @@ Model buildWrappingModel(const testCase& tc) {
     auto &sliderCoordLeft =
             sliderLeft->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordLeft.setName("yCoordSliderLeft");
-    sliderCoordLeft.setDefaultValue(tc.BODY_HEIGHT);
+    sliderCoordLeft.setDefaultValue(tc.CYLINDER_HEIGHT+tc.CYLINDER_RADIUS);
+//    sliderCoordLeft.setDefaultValue(tc.BODY_HEIGHT);
     auto &sliderCoordRight =
             sliderRight->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordRight.setName("yCoordSliderRight");
-    sliderCoordRight.setDefaultValue(tc.BODY_HEIGHT);
+//    sliderCoordRight.setDefaultValue(tc.BODY_HEIGHT);
+    sliderCoordRight.setDefaultValue(tc.CYLINDER_HEIGHT+tc.CYLINDER_RADIUS);
 
 
 
     // SPRING
     auto spring = new PathSpring("spring", tc.REST_LENGTH, tc.STIFFNESS, tc.DISSIPATION);
-    spring->updGeometryPath().appendNewPathPoint("origin", *bodyLeft, Vec3(0, bodySideLength / 2, 0));
-    spring->updGeometryPath().appendNewPathPoint("insertion", *bodyRight, Vec3(0, bodySideLength / 2, 0));
+    spring->updGeometryPath().appendNewPathPoint("origin", *bodyLeft, Vec3(0));
+    spring->updGeometryPath().appendNewPathPoint("insertion", *bodyRight, Vec3(0));
 
 
 
@@ -85,14 +87,24 @@ Model buildWrappingModel(const testCase& tc) {
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
                                                  SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
 
+
     auto wrapSurface = new WrapCylinder();
-    if (tc.WRAP_BODY_TYPE == "ellipsoid"){
+    if (tc.WRAP_BODY_TYPE == "ellipsoid" || tc.WRAP_BODY_TYPE == "ellipse"){
         delete wrapSurface;
         auto wrapSurface = new WrapEllipsoid();
-        wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
+        wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,2));
+    } else if (tc.WRAP_BODY_TYPE == "cylinder") {
+        delete wrapSurface;
+        auto wrapSurface = new WrapCylinder();
+        wrapSurface->set_radius(tc.CYLINDER_RADIUS);
+        wrapSurface->set_length(2);
+    } else if (tc.WRAP_BODY_TYPE == "sphere") {
+        delete wrapSurface;
+        auto wrapSurface = new WrapSphere();
+        wrapSurface->set_radius(tc.CYLINDER_RADIUS);
     } else {
         wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-        wrapSurface->set_length(1);
+        wrapSurface->set_length(2);
     }
     wrapSurface->set_xyz_body_rotation(tc.CYLINDER_ROT);
     wrapSurface->set_quadrant("+y");
@@ -107,11 +119,12 @@ Model buildWrappingModel(const testCase& tc) {
 
 
     // Attach geometry to the bodies and enable the visualizer.
-    auto bodyLeftGeometry = new Brick(Vec3(bodySideLength / 2.));
+    double sphereRadius = 0.04;
+    auto bodyLeftGeometry = new Sphere(sphereRadius);
     bodyLeftGeometry->setColor(Vec3(0.8, 0.1, 0.1));
     bodyLeft->attachGeometry(bodyLeftGeometry);
 
-    auto bodyRightGeometry = new Brick(Vec3(bodySideLength / 2.));
+    auto bodyRightGeometry = new Sphere(sphereRadius);
     bodyRightGeometry->setColor(Vec3(0.8, 0.1, 0.1));
     bodyRight->attachGeometry(bodyRightGeometry);
 

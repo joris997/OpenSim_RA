@@ -14,7 +14,7 @@ struct testCase {
     bool   PATH_POINTS         { true };
     // Spring parameters
     double REST_LENGTH         { 1.0 };
-    double STIFFNESS           { 500.0 };
+    double STIFFNESS           { 100000.0 };
     double DISSIPATION         { 0.1 };
     // Muscle parameters
     double OPT_FIBER_LENGTH    { 1.5 };         // was 0.55

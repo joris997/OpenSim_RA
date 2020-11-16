@@ -80,11 +80,12 @@ def general_loop(variable,loopRange,nTimes,isVec,showVisualizer=False,plotLength
 
 
 def main():
-    rotationArray = np.linspace(1,1.2,10)
-#    rotationArray = np.linspace(10,5000,250)
-    variable = "body_mass_factor"
-    nTimes = 10
-    isVec = 0
+#    rotationArray = np.linspace(1,1.2,10)
+#    variable = "body_mass_factor"
+    rotationArray = np.linspace(0,1,20)
+    variable = "cylinder_rotation"
+    nTimes = 20
+    isVec = 2
     general_loop(variable,rotationArray,nTimes,isVec)
 
 

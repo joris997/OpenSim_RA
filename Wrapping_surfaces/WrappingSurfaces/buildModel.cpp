@@ -76,19 +76,19 @@ Model buildWrappingModel(const testCase& tc) {
     if (tc.WRAP_BODY_TYPE == "ellipsoid" || tc.WRAP_BODY_TYPE == "ellipse"){
         delete wrapSurface;
         auto wrapSurface = new WrapEllipsoid();
-        wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,1));
+        wrapSurface->set_dimensions(Vec3(tc.CYLINDER_RADIUS,tc.CYLINDER_RADIUS,2));
     } else if (tc.WRAP_BODY_TYPE == "cylinder") {
         delete wrapSurface;
         auto wrapSurface = new WrapCylinder();
         wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-        wrapSurface->set_length(1);
+        wrapSurface->set_length(2);
     } else if (tc.WRAP_BODY_TYPE == "sphere") {
         delete wrapSurface;
         auto wrapSurface = new WrapSphere();
         wrapSurface->set_radius(tc.CYLINDER_RADIUS);
     } else {
         wrapSurface->set_radius(tc.CYLINDER_RADIUS);
-        wrapSurface->set_length(1);
+        wrapSurface->set_length(2);
     }
 
     wrapSurface->set_xyz_body_rotation(tc.CYLINDER_ROT);
