@@ -157,7 +157,13 @@ int test(const testCase& tc) {
     SimTK::State& x0 = model.initSystem();
 
     // run the simulation
+    clock_t ticks = clock();
     simulate(model, x0, tc.FINAL_TIME, true);
+    ticks = clock() - ticks;
+    double runTime = (float)ticks/CLOCKS_PER_SEC;
+    std::cout << "runtime: " << runTime << std::endl;
+
+//    simulate(model, x0, tc.FINAL_TIME, true);
 
     // convert spring length table result to vector of doubles
     const auto length = table->getTable().getDependentColumnAtIndex(0);

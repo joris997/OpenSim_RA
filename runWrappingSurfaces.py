@@ -98,7 +98,7 @@ def main():
 
     variableArray = np.linspace(0,1,100)
     variable = "cylinder_rotation"
-    nTimes = 30
+    nTimes = 20
     isVec = 2
 
     general_loop(variable,variableArray,nTimes,isVec)

@@ -167,20 +167,21 @@ int test(const testCase& tc) {
     simulate(model, x0, tc.FINAL_TIME, true);
     ticks = clock() - ticks;
     double runTime = (float)ticks/CLOCKS_PER_SEC;
+    std::cout << "runtime: " << runTime << std::endl;
 
-    // convert spring length table result to vector of doubles
-    const auto length = table->getTable().getDependentColumnAtIndex(2);
-    std::vector<double> springLength(length.size());
-    for(int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
-        springLength[i] = (double)length[i];
-    }
+//    // convert spring length table result to vector of doubles
+//    const auto length = table->getTable().getDependentColumnAtIndex(2);
+//    std::vector<double> springLength(length.size());
+//    for(int i=0; i<tc.FINAL_TIME/tc.REPORTING_INTERVAL; i++){
+//        springLength[i] = (double)length[i];
+//    }
     
-    // output the results
-    std::cout << tc.REPORTING_INTERVAL << std::endl;
-    for (const auto &e : springLength){
-        std::cout << e << "\t";
-    }
-    std::cout << std::endl;
+//    // output the results
+//    std::cout << tc.REPORTING_INTERVAL << std::endl;
+//    for (const auto &e : springLength){
+//        std::cout << e << "\t";
+//    }
+//    std::cout << std::endl;
 
     return 0;
 }
