@@ -33,6 +33,7 @@ static const char stiffness_arg[] = "--stiffness=";
 static const char dissipation_arg[] = "--dissipation=";
 static const char body_mass_arg[] = "--body_mass=";
 static const char body_mass_factor_arg[] = "--body_mass_factor=";
+static const char body_offset_arg[] = "--body_offset=";
 static const char cylinder_rotation_arg[] = "--cylinder_rotation=";
 static const char wrapping_body_type_arg[] = "--type=";
 static const char final_time_arg[] = "--final_time=";
@@ -43,6 +44,7 @@ using OpenSim::Model;
 using OpenSim::ConsoleReporter;
 using SimTK::Vec3;
 
+void buildWrappingModelIndividual(Model& model, double offset);
 Model buildWrappingModel(const testCase& tc);
 int test(const testCase& tc);
 
@@ -51,9 +53,9 @@ void addConsole(Model& model, const testCase& tc){
     auto console = new ConsoleReporter();
     console->setName("wrapping_results_console");
     console->set_report_time_interval(tc.REPORTING_INTERVAL);
-    console->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
-    console->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
-    console->addToReport(model.getComponent("/forceset/spring").getOutput("length"));
+//    console->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
+//    console->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
+//    console->addToReport(model.getComponent("/forceset/spring").getOutput("length"));
     model.addComponent(console);
 }
 
@@ -108,6 +110,13 @@ void commandLineArguments(testCase& tc, int argc, char** argv){
             char* end;
             tc.FINAL_TIME = strtod(val, &end);
         }
+        // body offset
+        else if (strncmp(arg,body_offset_arg,sizeof(body_offset_arg)-1)==0){
+            char const* val = arg + (sizeof(body_offset_arg)-1);
+            char* end;
+            tc.BODY_OFFSET = strtod(val, &end);
+        }
+
         else {
             std::cout << "Unknown argument '" << arg << "'" << std::endl;
         }
@@ -125,6 +134,7 @@ int main(int argc, char** argv) {
         int testCount = 1;
         for (int i=0; i<testCount; i++){
             testCase tc;
+            tc.SHOW_VISUALIZER = true;
             testCases.push_back(tc);
         }
     }
@@ -152,13 +162,13 @@ int test(const testCase& tc) {
 //    model.printSubcomponentInfo<Joint>();
 
     // Add table for result processing
-    auto table = new TableReporter();
-    table->setName("wrapping_results_table");
-    table->set_report_time_interval(tc.REPORTING_INTERVAL);
-    table->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
-    table->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
-    table->addToReport(model.getComponent("/forceset/spring").getOutput("length"));
-    model.addComponent(table);
+//    auto table = new TableReporter();
+//    table->setName("wrapping_results_table");
+//    table->set_report_time_interval(tc.REPORTING_INTERVAL);
+//    table->addToReport(model.getComponent(sliderLPath).getOutput("value"), "height slider L");
+//    table->addToReport(model.getComponent(sliderRPath).getOutput("value"), "height slider R");
+//    table->addToReport(model.getComponent("/forceset/spring").getOutput("length"));
+//    model.addComponent(table);
 
     SimTK::State& x0 = model.initSystem();
 

@@ -94,8 +94,6 @@ Model buildWrappingModel(const testCase& tc) {
     model.addForce(springToLeft);
     model.addForce(springToRight);
 
-
-
     // WRAPPING SURFACE
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame", model.getGround(),
                                                  SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, 0)));
