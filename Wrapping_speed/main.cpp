@@ -34,6 +34,7 @@ static const char dissipation_arg[] = "--dissipation=";
 static const char body_mass_arg[] = "--body_mass=";
 static const char body_mass_factor_arg[] = "--body_mass_factor=";
 static const char body_offset_arg[] = "--body_offset=";
+static const char body_height_arg[] = "--body_height=";
 static const char cylinder_rotation_arg[] = "--cylinder_rotation=";
 static const char wrapping_body_type_arg[] = "--type=";
 static const char final_time_arg[] = "--final_time=";
@@ -115,6 +116,12 @@ void commandLineArguments(testCase& tc, int argc, char** argv){
             char const* val = arg + (sizeof(body_offset_arg)-1);
             char* end;
             tc.BODY_OFFSET = strtod(val, &end);
+        }
+        // body height
+        else if (strncmp(arg,body_height_arg,sizeof(body_height_arg)-1)==0){
+            char const* val = arg + (sizeof(body_height_arg)-1);
+            char* end;
+            tc.BODY_HEIGHT = strtod(val, &end);
         }
 
         else {

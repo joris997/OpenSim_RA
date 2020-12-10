@@ -55,7 +55,7 @@ void buildWrappingModelIndividual(Model& model, const testCase& tc,
 
     // Set the coordinate names and default values. Note that we need "auto&"
     // here so that we get a reference to the Coordinate rather than a copy.
-    double startHeight = tc.CYLINDER_HEIGHT; //- tc.CYLINDER_RADIUS;
+    double startHeight = tc.BODY_HEIGHT; //- tc.CYLINDER_RADIUS;
     auto &sliderCoordLeft =
             sliderLeft->updCoordinate(SliderJoint::Coord::TranslationX);
     sliderCoordLeft.setName("yCoordSliderLeft"+type);
@@ -141,9 +141,17 @@ Model buildWrappingModel(const testCase& tc) {
     model.setName("Normal_Wrapping");
     model.setGravity(Vec3(0, -9.80665, 0));
 
-    buildWrappingModelIndividual(model,tc,"cylinder",0.8);
-    buildWrappingModelIndividual(model,tc,"ellipsoid",0.4);
-    buildWrappingModelIndividual(model,tc,"viapoints",0);
+    if (tc.WRAP_BODY_TYPE == "cylinder"){
+        buildWrappingModelIndividual(model,tc,"cylinder",0.8);
+    } else if (tc.WRAP_BODY_TYPE == "ellipsoid"){
+        buildWrappingModelIndividual(model,tc,"ellipsoid",0.4);
+    } else if (tc.WRAP_BODY_TYPE == "viapoints"){
+        buildWrappingModelIndividual(model,tc,"viapoints",0);
+    } else {
+        buildWrappingModelIndividual(model,tc,"cylinder",0.8);
+        buildWrappingModelIndividual(model,tc,"ellipsoid",0.4);
+        buildWrappingModelIndividual(model,tc,"viapoints",0);
+    }
 
     if (showVisualizer)
         model.setUseVisualizer(true);

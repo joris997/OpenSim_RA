@@ -9,6 +9,7 @@
 using OpenSim::Coordinate;
 using OpenSim::Component;
 using OpenSim::Muscle;
+using OpenSim::Array;
 
 static const char HELP[] =
 R"(usage: fd [--help][--no-visualizer][--no-wrapping][--format=<format>]
@@ -91,6 +92,7 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     }
 
     SimTK::State& state = model.initSystem();
+//    std::cout << "state: " << state.toString() << std::endl;
     model.equilibrateMuscles(state);
     model.realizeVelocity(state);
 
@@ -120,12 +122,19 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     //
     // THIS IS WHERE THE ANALYSIS MOSTLY HAPPENS
     auto handle_coord = [&](Muscle const& m, Coordinate const& c, char const* label) {
+//        // compute path's moment arms for all gen. coord.
+//        // added by Joris as a double check
+//        if (m.getName() == "gaslat_l"){
+//            Array<double> momentArms;
+//            m.getGeometryPath().computeMomentArms(state,momentArms);
+//        }
+
         bool prev_locked = c.getLocked(state);
         double prev_val = c.getValue(state);
 
         c.setLocked(state, false);
 
-        static constexpr int num_steps = 3;
+        static constexpr int num_steps = 20;
         double nonzero_v = 0.0;
         double start = c.getRangeMin();
         double end = c.getRangeMax();
@@ -161,9 +170,11 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     std::ofstream assocs{"tmp/assocs"};
 
     for (auto const& m : model.getComponentList<OpenSim::Muscle>()) {
+        if (m.getName() == "gaslat_l"){
         associated_coords.clear();
 
         for (OpenSim::Coordinate const* c : coords) {
+            std::cout << "coord: " << c->getName() << std::endl;
             char const* label = "undefined     ";
 
             switch (c->getMotionType()) {
@@ -191,6 +202,7 @@ static void perform_spline_analysis(OpenSim::Model& model) {
                 assocs << associated_coords[i] << " ";
             }
             assocs << associated_coords[associated_coords.size()-1] << std::endl;
+        }
         }
     }
 }
