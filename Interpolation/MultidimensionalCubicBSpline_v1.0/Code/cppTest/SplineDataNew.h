@@ -32,7 +32,7 @@ using std::vector;
 using std::string;
 using std::pair;
 
-const int N_DOF = 4;
+const int N_DOF = 2;
 
 
 class SplineData {

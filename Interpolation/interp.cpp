@@ -3,7 +3,7 @@
 #include <iostream>
 #include <algorithm>
 
-double interp::interpGridSpline(std::vector<double> x){
+double interp::getInterp(std::vector<double> x){
     if (x.size() != dimension){
         std::cout << "Interpolation state not equal to object's dimension" << std::endl;
         exit(EXIT_FAILURE);
@@ -34,23 +34,12 @@ double interp::interpGridSpline(std::vector<double> x){
 
     // compute the polynomials (already evaluated)
     double beta[dimension][4];
-    bool derivative = false;
-    if (!derivative){
-        for (int i=0; i<dimension; i++){
-            // compute binomial coefficient
-            beta[i][0] = (0.5*pow(u[i] - 1,3)*u[i]*(2*u[i] + 1));
-            beta[i][1] = (-0.5*(u[i] - 1)*(6*pow(u[i],4) - 9*pow(u[i],3) + 2*u[i] + 2));
-            beta[i][2] = (0.5*u[i]*(6*pow(u[i],4) - 15*pow(u[i],3) + 9*pow(u[i],2) + u[i] + 1));
-            beta[i][3] = (-0.5*(u[i] - 1)*pow(u[i],3)*(2*u[i] - 3));
-        }
-    } else {
-        for (int i=0; i<dimension; i++){
-            // compute binomial coefficient derivatives
-            beta[i][0] = 0.5*pow(u[i]-1,2)*(10*pow(u[i],2)-1);
-            beta[i][1] = -0.5*u[i]*(30*pow(u[i],3) - 60*pow(u[i],2) + 27*u[i] + 4);
-            beta[i][2] = 0.5*(-30*pow(u[i],4) + 60*pow(u[i],3) - 27*pow(u[i],2) + 2*u[i] - 1);
-            beta[i][3] = -0.5*pow(u[i],2)*(10*pow(u[i],2) - 20*u[i] + 9);
-        }
+    for (int i=0; i<dimension; i++){
+        // compute binomial coefficient
+        beta[i][0] = (0.5*pow(u[i] - 1,3)*u[i]*(2*u[i] + 1));
+        beta[i][1] = (-0.5*(u[i] - 1)*(6*pow(u[i],4) - 9*pow(u[i],3) + 2*u[i] + 2));
+        beta[i][2] = (0.5*u[i]*(6*pow(u[i],4) - 15*pow(u[i],3) + 9*pow(u[i],2) + u[i] + 1));
+        beta[i][3] = (-0.5*(u[i] - 1)*pow(u[i],3)*(2*u[i] - 3));
     }
 
     // loop over all the considered points (n-dimensional) and multiply the
@@ -114,6 +103,73 @@ double interp::interpGridSpline(std::vector<double> x){
 
 
 
+double interp::getInterpDer(std::vector<double> x, int coordinate){
+    if (x.size() != dimension){
+        std::cout << "Interpolation state not equal to object's dimension" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if (coordinate > dimension-1){
+        std::cout << "Derivative coordinate outside dimension" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    // This is the main interpolation function
+    // IN:  x, a vector of points within the considered interpolation range
+    //      coordinate, the generalized coordinate of which we take the derivative
+    // OUT: eval, the interpolated value
+
+    // get the index of the closest range value to the discretization point
+    std::vector<int> n;
+    for (int i=0; i<dimension; i++){
+        for (int ii=1; ii<discretization[i].size(); ii++){
+            if (x[i] - discretization[i][ii] < 0){
+                n.push_back(ii-1);
+                break;
+            }
+        }
+    }
+
+    // compute remaining fraction
+    std::vector<double> u;
+    for (int i=0; i<dimension; i++){
+        u.push_back((double)(x[i]-discretization[i][n[i]])/
+                (discretization[i][2]-discretization[i][1]));
+    }
+
+    int g = (nInterPoints-2)/2;
+
+    // compute the polynomials (already evaluated)
+    double beta[dimension][4];
+    for (int i=0; i<dimension; i++){
+        // compute binomial coefficient derivatives
+        beta[i][0] = 5*pow(u[i],4) - 10*pow(u[i],3) + 4.5*pow(u[i],2) + u[i] - 0.5;
+        beta[i][1] = -15*pow(u[i],4) + 30*pow(u[i],3) - 13.5*pow(u[i],2) - 2*u[i];
+        beta[i][2] = 15*pow(u[i],4) - 30*pow(u[i],3) + 13.5*pow(u[i],2) + u[i] + 0.5;
+        beta[i][3] = pow(u[i],2)*(-5*pow(u[i],2) + 10*u[i] - 4.5);
+    }
+
+    // loop over all the considered points (n-dimensional) and multiply the
+    // evaluation with the weight
+    double z, Beta;
+    int discrLoopCnt = -1;
+    for (int i=0; i<4; i++){
+        Beta = beta[coordinate][i];
+        std::vector<int> loc;
+        for (int j=0; j<dimension; j++){
+            loc.push_back(n[j]);
+        }
+        loc[coordinate] += discrLoopCnt;
+
+        z += getEval(loc)*Beta/
+                (discretization[coordinate][1]-discretization[coordinate][0]);
+
+        discrLoopCnt += 1;
+    }
+
+    return z;
+}
+
+
+
 double interp::interpCubicHermiteSpline(std::vector<double> x, int derivativeOrder){
     // This is the main interpolation function
     // IN:  x, a vector of points within the considered interpolation range
@@ -161,13 +217,6 @@ double interp::interpCubicHermiteSpline(std::vector<double> x, int derivativeOrd
                      " not supported" << std::endl;
         exit(EXIT_FAILURE);
     }
-//    for (int i=0; i<dimension; i++){
-//        std::cout << "sum(beta[" << i << "]): " << beta[i][0] + beta[i][1] + beta[i][2] +
-//                beta[i][3] << std::endl;
-//    }
-//    for (int i=0; i<4; i++){
-//        std::cout << "beta[0][" << i << "]: " << beta[0][i] << std::endl;
-//    }
 
     // obtain derivative approximation m
     for (int i=0; i<dimension; i++){
@@ -202,7 +251,8 @@ double interp::interpCubicHermiteSpline(std::vector<double> x, int derivativeOrd
 
     for (int i=0; i<dimension; i++){
         pkp1 = n; pkp1[i] += 1;
-        z += (Beta0*getEval(n) + Beta1*m[i][0] + Beta2*getEval(pkp1) + Beta3*m[i][1]);
+        z += (Beta0*getEval(n) + Beta1*m[i][0] +
+              Beta2*getEval(pkp1) + Beta3*m[i][1]);
 //        z += (beta[i][0]*getEval(n) + beta[i][1]*m[i][0] +
 //              beta[i][2]*getEval(pkp1) + beta[i][3]*m[i][1]);
 //        std::cout << "\n" << "z[" << i << "]: " <<
@@ -216,17 +266,25 @@ double interp::interpCubicHermiteSpline(std::vector<double> x, int derivativeOrd
 void interp::computeBasisFunctions(std::vector<std::vector<double>> &beta,
                                    std::vector<double> u,
                                    int order){
-    // create the basis spline functions
+//    // create the basis spline functions
+//    for (int i=0; i<dimension; i++){
+//        double Bk[4];
+//        for (int k=0; k<4; k++){
+//            Bk[k] = binomialCoefficient(order,k)*pow(u[i],k)*pow(1-u[i],order-k);
+//        }
+//        std::vector<double> betaArray;
+//        betaArray.push_back(Bk[0] + Bk[1]);
+//        betaArray.push_back(Bk[1]/3);
+//        betaArray.push_back(Bk[3] + Bk[2]);
+//        betaArray.push_back(-Bk[2]/3);
+//        beta.push_back(betaArray);
+//    }
     for (int i=0; i<dimension; i++){
-        double Bk[4];
-        for (int k=0; k<4; k++){
-            Bk[k] = binomialCoefficient(order,k)*pow(u[i],k)*pow(1-u[i],order-k);
-        }
         std::vector<double> betaArray;
-        betaArray.push_back(Bk[0] + Bk[1]);
-        betaArray.push_back(Bk[1]/3);
-        betaArray.push_back(Bk[3] + Bk[2]);
-        betaArray.push_back(-Bk[2]/3);
+        betaArray.push_back(2*pow(u[i],3) - 3*pow(u[i],2) + 1);
+        betaArray.push_back(pow(u[i],3) - 2*pow(u[i],2) + u[i]);
+        betaArray.push_back(-2*pow(u[i],3) + 3*pow(u[i],2));
+        betaArray.push_back(pow(u[i],3) - pow(u[i],2));
         beta.push_back(betaArray);
     }
 }
@@ -236,18 +294,26 @@ void interp::computeBasisFunctions(std::vector<std::vector<double>> &beta,
 void interp::computeBasisFunctionsDerivatives(std::vector<std::vector<double>> &beta,
                                               std::vector<double> u,
                                               int order){
-    // compute the derivatives of the basis spline function for evaluation of the
-    // derivative of the grid-frield
+//    // compute the derivatives of the basis spline function for evaluation of the
+//    // derivative of the grid-frield
+//    for (int i=0; i<dimension; i++){
+//        double Bk[4];
+//        for (int k=0; k<4; k++){
+//            Bk[k] = binomialCoefficient(order,k)*k*pow(u[i],k-1)*(order-k)*pow(1-u[i],order-k-1);
+//        }
+//        std::vector<double> betaArray;
+//        betaArray.push_back(Bk[0] + Bk[1]);
+//        betaArray.push_back(Bk[1]/3);
+//        betaArray.push_back(Bk[3] + Bk[2]);
+//        betaArray.push_back(-Bk[2]/3);
+//        beta.push_back(betaArray);
+//    }
     for (int i=0; i<dimension; i++){
-        double Bk[4];
-        for (int k=0; k<4; k++){
-            Bk[k] = binomialCoefficient(order,k)*k*pow(u[i],k-1)*(order-k)*pow(1-u[i],order-k-1);
-        }
         std::vector<double> betaArray;
-        betaArray.push_back(Bk[0] + Bk[1]);
-        betaArray.push_back(Bk[1]/3);
-        betaArray.push_back(Bk[3] + Bk[2]);
-        betaArray.push_back(-Bk[2]/3);
+        betaArray.push_back(6*pow(u[i],2) - 6*u[i]);
+        betaArray.push_back(3*pow(u[i],2) - 4*u[i] + 1);
+        betaArray.push_back(-6*pow(u[i],2) + 6*u[i]);
+        betaArray.push_back(3*pow(u[i],2) - 2*u[i]);
         beta.push_back(betaArray);
     }
 }

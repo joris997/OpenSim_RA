@@ -31,7 +31,9 @@ class interp{
 
         // template member functions
         double getEval(std::vector<int> loc);
-        double interpGridSpline(std::vector<double> x);
+        double getInterp(std::vector<double> x);
+        double getInterpDer(std::vector<double> x, int coordinate);
+
         double interpCubicHermiteSpline(std::vector<double> x, int derivativeOrder);
         void computeBasisFunctions(std::vector<std::vector<double>> &beta,
                                    std::vector<double> u, int order);

@@ -99,18 +99,18 @@ void Spline<dim>::computeCoefficients(std::vector<double>& y, std::vector<double
   
   int noInterpolatedDataFromPreCoeffs = numberOfPreCoeffs/(n_[dim-1]+1);
   std::vector<double> interpolatedDataFromPreCoeffs(noInterpolatedDataFromPreCoeffs);
-  
   for (int i = 0; i < noInterpolatedDataFromPreCoeffs; ++i) {
     for (int j = 0; j < (n_[dim-1]+1); ++j) {
        interpolatedDataFromPreCoeffs[j] = preCoeffs[j * noInterpolatedDataFromPreCoeffs+i];
- 
     }
+    // error is here
     splineSecondPhase_.computeCoefficients(interpolatedDataFromPreCoeffs, interpolatedDataFromPreCoeffs.begin());
     for(int j=0; j< n_[dim-1]+3;j++) {
       c_[j*(noInterpolatedDataFromPreCoeffs)+i] = splineSecondPhase_.c_[j];
    }
       
   }
+
 #ifdef LOG_SPLINE
   std::cout << "Spline<" << dim << ">'s " << c_.size() <<" coeffs\n";
     for (int i = 0; i < c_.size(); ++i)
@@ -283,6 +283,7 @@ Spline<1>::Spline(const double a, const double b, const int n)
   c_.resize(n_+3);
 
 #ifdef LOG_SPLINE
+  std::cout << "spline with double call" << std::endl;
   std::cout << std::endl << " Created Spline of dim 1 " ;
   std::cout << " a " << a_ << " b " << b_ << " n " << n_ << " h " << h_ << std::endl;
   std::cout << " number of Coeff " << n_+3 << std::endl;
@@ -298,6 +299,7 @@ Spline<1>::Spline(const std::vector<double>& a, const std::vector<double>& b, co
   c_.resize(n_+3);
  
 #ifdef LOG_SPLINE
+  std::cout << "spline with vector call" << std::endl;
   std::cout << std::endl << " Created Spline of dim 1 " ;
   std::cout << " a " << a_ << " b " << b_ << " n " << n_ << " h " << h_ << std::endl;
   std::cout << " number of Coeff " << n_+3 << std::endl;

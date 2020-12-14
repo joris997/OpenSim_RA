@@ -152,7 +152,7 @@ void SplineData::openOutputFile(ofstream& outputDataFile) {
   for (int i = 0; i < noMuscles_; ++i)
     outputDataFile << "eval\t";
   outputDataFile << endl;
-}  
+}
 
 void SplineData::openEvalFile(ifstream& evalDataFile) {
   

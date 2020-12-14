@@ -58,27 +58,26 @@ SplineData::SplineData(const vector<vector<double>>& disc,
     noDof_ = disc.size();
     noInputData_ = evalPairs.size();
 
-    for (int i=0; i<noDof_; i++){
-        muscleNames_.push_back(to_string(i));
+    for (int i=0; i<noDof_; ++i){
         dofName_.push_back(to_string(i));
-
         a_[i] = disc[i][0];
-        b_[i] = disc[i][disc[i].size()];
+        b_[i] = disc[i][disc[i].size()-1];
         n_[i] = disc[i].size();
     }
 
-    // create vectors of all the angle combinations
-    for (int i=0; i<noInputData_; i++){
-        angles_.push_back(evalPairs[i].first);
-    }
+//    // create vectors of all the angle combinations
+//    for (int i=0; i<noInputData_; ++i){
+//        angles_.push_back(evalPairs[i].first);
+//    }
 
     // consider the muscles
     noMuscles_ = 1;        // this is actually incorrect, only 1 mus
-    for (int i=0; i<noMuscles_; i++){
+    muscleNames_.push_back("muscle1");
+    for (int i=0; i<noMuscles_; ++i){
         y_.push_back(vector<double>(noInputData_));
     }
-    for(int i=0; i<noInputData_; i++){
-        for (int j=0; j<noMuscles_; j++){
+    for(int i=0; i<noInputData_; ++i){
+        for (int j=0; j<noMuscles_; ++j){
             // this should evaluate the wrapping length
             y_[j][i] = evalPairs[i].second;
         }
@@ -97,69 +96,82 @@ SplineData::SplineData(const vector<vector<double>>& disc,
     }
 }
 
-SplineData::SplineData(const vector<pair<std::string,double[3]>>& dofInfo)
-:dofName_(dofInfo.size()),  a_(dofInfo.size()), b_(dofInfo.size()), n_(dofInfo.size()) {
-    noDof_ = dofInfo.size();
-
-    noInputData_ = 1;
-    for (int i=0; i<noDof_; i++){
-        muscleNames_[i] = dofInfo[i].first;
-        dofName_[i] = dofInfo[i].first;
-
-        a_[i] = dofInfo[i].second[0];
-        b_[i] = dofInfo[i].second[1];
-        n_[i] = dofInfo[i].second[3];
-        noInputData_ *= dofInfo[i].second[3];
-    }
-
-    // create vectors of all the angle combinations
-    for (int i=0; i<noInputData_; i++){
-        angles_.push_back(vector<double>(noDof_));
-    }
-    for (int i=0; i<noInputData_; i++){
-        for (int j=0; j<noDof_; j++){
-            // NEEDS A FIX
-            angles_[i][j] = 0;
-        }
-    }
-
-    // consider the muscles
-    noMuscles_ = 1;        // this is actually incorrect, only 1 mus
-    for (int i=0; i<noMuscles_; i++){
-        y_.push_back(vector<double>(noInputData_));
-    }
-    // and create the 'wrapping length' evaluation. should later be incorporated
-    // with the getWrappingLength() command of OpenSim
-    for(int i=0; i<noInputData_; i++){
-        for (int j=0; j<noMuscles_; j++){
-            // this should evaluate the wrapping length
-            y_[j][i] = (double)i*j;
-        }
-    }
-
-    // create the noMuscles_ splines
-    for (int i = 0; i < noMuscles_; ++i) {
-        Spline<N_DOF> newSpline(a_,b_,n_);
-        splines_.push_back(newSpline);
-    }
-
-    // now compute coefficients for each muscle
-    for (int i = 0; i < noMuscles_; ++i) {
-        vector<double> currentMuscle(y_[i]);
-        splines_[i].computeCoefficients(currentMuscle, currentMuscle.begin());
-    }
-}
-
 
 double SplineData::getEval(std::vector<double> x){
+    if (x.size() != noDof_){
+        cout << "Evaluation vector of wrong size" << endl;
+    }
+//    angles_.clear();
+//    angles_.push_back(x);
     return splines_[0].getValue(x);
 }
 
 
 vector<double> SplineData::getEvalDer(std::vector<double> x){
+    if (x.size() != noDof_){
+        cout << "Evaluation vector of wrong size" << endl;
+    }
     vector<double> derivatives;
     for (int k=0; k<noDof_; ++k){
         derivatives.push_back(-splines_[0].getFirstDerivative(x,k));
     }
     return derivatives;
 }
+
+
+
+
+
+
+//SplineData::SplineData(const vector<pair<std::string,double[3]>>& dofInfo)
+//:dofName_(dofInfo.size()),  a_(dofInfo.size()), b_(dofInfo.size()), n_(dofInfo.size()) {
+//    noDof_ = dofInfo.size();
+
+//    noInputData_ = 1;
+//    for (int i=0; i<noDof_; i++){
+//        muscleNames_[i] = dofInfo[i].first;
+//        dofName_[i] = dofInfo[i].first;
+
+//        a_[i] = (double)dofInfo[i].second[0];
+//        b_[i] = (double)dofInfo[i].second[1];
+//        n_[i] = (int)dofInfo[i].second[3];
+//        noInputData_ *= dofInfo[i].second[3];
+//    }
+
+//    // create vectors of all the angle combinations
+//    for (int i=0; i<noInputData_; i++){
+//        angles_.push_back(vector<double>(noDof_));
+//    }
+//    for (int i=0; i<noInputData_; i++){
+//        for (int j=0; j<noDof_; j++){
+//            // NEEDS A FIX
+//            angles_[i][j] = 0;
+//        }
+//    }
+
+//    // consider the muscles
+//    noMuscles_ = 1;        // this is actually incorrect, only 1 mus
+//    for (int i=0; i<noMuscles_; i++){
+//        y_.push_back(vector<double>(noInputData_));
+//    }
+//    // and create the 'wrapping length' evaluation. should later be incorporated
+//    // with the getWrappingLength() command of OpenSim
+//    for(int i=0; i<noInputData_; i++){
+//        for (int j=0; j<noMuscles_; j++){
+//            // this should evaluate the wrapping length
+//            y_[j][i] = (double)i*j;
+//        }
+//    }
+
+//    // create the noMuscles_ splines
+//    for (int i = 0; i < noMuscles_; ++i) {
+//        Spline<N_DOF> newSpline(a_,b_,n_);
+//        splines_.push_back(newSpline);
+//    }
+
+//    // now compute coefficients for each muscle
+//    for (int i = 0; i < noMuscles_; ++i) {
+//        vector<double> currentMuscle(y_[i]);
+//        splines_[i].computeCoefficients(currentMuscle, currentMuscle.begin());
+//    }
+//}

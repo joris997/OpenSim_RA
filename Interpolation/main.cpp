@@ -17,8 +17,8 @@ void testCase2D(){
     // Create the interpolation field
     std::vector<double> xRange;
     std::vector<double> yRange;
-    linspace(xRange,0,10,11);
-    linspace(yRange,0,10,11);
+    linspace(xRange,0,10,121);
+    linspace(yRange,0,10,155);
 
     std::vector<std::vector<double>> discretization;
     discretization.push_back(xRange);
@@ -43,12 +43,13 @@ void testCase2D(){
     std::vector<double> x;
     double valx = 5.3; double valy = 5.6;
     x.push_back(valx); x.push_back(valy);
-    std::cout << "interpGrid: " << a.interpGridSpline(x) <<
-                 " interpCubicHermite: " << a.interpCubicHermiteSpline(x,0) <<
+    std::cout << "interpGrid: " << a.getInterp(x) <<
+//                 " interpCubicHermite: " << a.interpCubicHermiteSpline(x,0) <<
                  " should be: " << valx*valy << std::endl;
 
-    std::cout << "derivative: " << a.interpCubicHermiteSpline(x,1) <<
-                 " should be: " << valx + valy << std::endl;
+    std::cout << "dinterGrid: " << a.getInterpDer(x,0) <<
+//                 " dinterCubicHermite: " << a.interpCubicHermiteSpline(x,1) <<
+                 " should be: " << valy << std::endl;
 }
 
 
@@ -57,7 +58,7 @@ void testCase1D(){
     std::cout << "\n" << "1D test-case" << std::endl;
 
     std::vector<double> xRange;
-    linspace(xRange,0,10,11);
+    linspace(xRange,0,10,41);
 
     std::vector<std::vector<double>> discretization1;
     discretization1.push_back(xRange);
@@ -68,20 +69,21 @@ void testCase1D(){
         newIndex1.push_back(i);
         std::pair<std::vector<int>,double> newPair1;
         newPair1.first = newIndex1;
-        newPair1.second = xRange[i]*xRange[i];
+        newPair1.second = xRange[i]*xRange[i]*xRange[i];
         evalsPair1.push_back(newPair1);
     }
     interp b = interp(discretization1,evalsPair1);
 
-    std::vector<double> x1;
-    double valx1 = 3.1;
-    x1.push_back(valx1);
-    std::cout << "interpGrid: " << b.interpGridSpline(x1) <<
-                 " interpCubicHermite: " << b.interpCubicHermiteSpline(x1,0) <<
-                 " should be: " << valx1*valx1 << std::endl;
+    std::vector<double> x;
+    double valx = 3.3;
+    x.push_back(valx);
+    std::cout << "interpGrid: " << b.getInterp(x) <<
+//                 " interpCubicHermite: " << b.interpCubicHermiteSpline(x,0) <<
+                 " should be: " << valx*valx*valx << std::endl;
 
-    std::cout << "derivative: " << b.interpCubicHermiteSpline(x1,1) <<
-                 " should be: " << 2*valx1 << std::endl;
+    std::cout << "dinterpGrid: " << b.getInterpDer(x,0) <<
+//                 " dinterCubicHermite: " << b.interpCubicHermiteSpline(x,1) <<
+                 " should be: " << 3*valx*valx << std::endl;
 }
 
 void testCaseOpenSim(){
