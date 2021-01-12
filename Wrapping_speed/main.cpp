@@ -165,6 +165,7 @@ int test(const testCase& tc) {
     using namespace OpenSim;
 
     auto model = buildWrappingModel(tc);
+    auto multibodyModel = model.getMultibodySystem();
 //    model.printSubcomponentInfo();
 //    model.printSubcomponentInfo<Joint>();
 

@@ -1,4 +1,5 @@
 add_executable(interpolate
+#        mainAdam.cpp
         main.cpp
         interp.cpp
         )

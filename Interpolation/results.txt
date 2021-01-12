@@ -1,0 +1,59 @@
+muscle: ehl_l c1: ankle_angle_l c2: mtp_angle_l
+real micros = 4
+interp micros = 17
+
+
+muscle: ehl_r c1: ankle_angle_r c2: mtp_angle_r
+real micros = 4
+interp micros = 14
+
+
+muscle: perbrev_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 3
+interp micros = 14
+
+
+muscle: perbrev_r c1: ankle_angle_r c2: subtalar_angle_r
+real micros = 3
+interp micros = 16
+
+
+muscle: perlong_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 4
+interp micros = 15
+
+
+muscle: perlong_r c1: ankle_angle_r c2: subtalar_angle_r
+real micros = 7
+interp micros = 19
+
+
+muscle: soleus_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 2
+interp micros = 14
+
+
+muscle: soleus_r c1: ankle_angle_r c2: subtalar_angle_r
+real micros = 2
+interp micros = 14
+
+
+muscle: tibant_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 3
+interp micros = 16
+
+
+muscle: tibant_r c1: ankle_angle_r c2: subtalar_angle_r
+real micros = 3
+interp micros = 15
+
+
+muscle: tibpost_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 3
+interp micros = 14
+
+
+muscle: tibpost_l c1: ankle_angle_l c2: subtalar_angle_l
+real micros = 3
+interp micros = 14
+
