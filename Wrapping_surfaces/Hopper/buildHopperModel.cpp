@@ -51,7 +51,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
     hopper.setGravity(Vec3(0, -9.80665, 0));
 
     // Create the pelvis, thigh, and shank bodies.
-    double pelvisMass = 30., pelvisSideLength = 0.2;
+    double pelvisMass = 20., pelvisSideLength = 0.2;
     auto pelvisInertia = pelvisMass * Inertia::brick(Vec3(pelvisSideLength/2.));
     auto pelvis = new Body("pelvis", pelvisMass, Vec3(0), pelvisInertia);
 
@@ -173,7 +173,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
             auto patella = new WrapCylinder();
             patella->setAllPropertiesUseDefault(true);
             patella->set_radius(0.08);
-            patella->set_length(linkRadius * 2.);
+            patella->set_length(linkRadius * 10.);
             patella->set_quadrant("+x");
             // even a significant rotation of the cylinder does not lead to the vastus slipping from the surface.
             //        patella->set_xyz_body_rotation(Vec3(0,0.5,0));

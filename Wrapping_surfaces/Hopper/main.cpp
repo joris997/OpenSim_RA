@@ -102,7 +102,7 @@ void run(bool showVisualizer, double finalTime)
     using namespace OpenSim;
     // overwrite visualizer boolean for debugging
     showVisualizer = true;
-    std::string wrap_surfaces[1] = {"ellipsoid"};
+    std::string wrap_surfaces[1] = {"cylinder"};
 //    std::string wrap_surfaces[4] = {"cylinder", "ellipsoid", "sphere", "torus"};
 //    std::string wrap_surfaces[6] = {"cylinder", "ellipsoid", "sphere", "torus", "points","blank"};
 

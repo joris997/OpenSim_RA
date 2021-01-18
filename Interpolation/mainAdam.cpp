@@ -319,7 +319,7 @@ static void perform_2d_spline_fit(
 
                 ++count;
 //                std::cerr<< "r: " << real_len << " i: " << interp_len << std::endl;
-//                real_v_interp << c1v << "\t" << c2v << "\t" << real_len << "\t" << interp_len << std::endl;
+                real_v_interp << c1v << "\t" << c2v << "\t" << real_len << "\t" << interp_len << std::endl;
             }
 //            std::cerr << "step" << std::endl;
         }

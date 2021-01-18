@@ -49,4 +49,5 @@ add_subdirectory(Wrapping_surfaces/WrappingSurfaces)
 add_subdirectory(Wrapping_cables)
 add_subdirectory(Wrapping_speed)
 add_subdirectory(Interpolation)
+add_subdirectory(Integration)
 

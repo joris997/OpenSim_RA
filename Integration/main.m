@@ -9,15 +9,20 @@ delta = 0.0001;
 opts = odeset('RelTol',1e-4);
 
 figure
-subplot(1,2,1)
+subplot(1,3,1)
 start_time = clock();
 ode45(f,[t0,2/delta],delta,opts);
 runtime45 = etime(clock(),start_time);
 
-subplot(1,2,2)
+subplot(1,3,2)
 start_time = clock();
 ode15s(f,[t0,2/delta],delta,opts);
 runtime15s = etime(clock(),start_time);
+
+% subplot(1,3,3)
+% start_time = clock();
+% ode15i(f,[t0,2/delta],delta,opts);
+% runtime15i = etime(clock(),start_time);
 
 % delta = 0.0001:
 % t15s = 0.39, t45 = 2.67 -> 6.85x

@@ -20,23 +20,9 @@ double interp::getInterp(vector<double> x){
     // This is the main interpolation function
     // IN:  x, a vector of points within the considered interpolation range
     // OUT: eval, the interpolated value
-    if (x.size() != dimension){
-        std::cout << "Interpolation state not equal to object's dimension" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    assert(x.size() == dimension);
 
     // get the index of the closest range value to the discretization point
-//    for (int i=0; i<dimension; i++){
-//        for (int ii=1; ii<discretization[i].size(); ii++){
-//            // PERFORMANCE DROP
-//            if (x[i] - discretization[i][ii] < 0){
-//                n[i] = ii-1;
-//                break;
-//            }
-//        }
-//    }
-
-    // FIX
     for (int i=0; i<dimension; i++){
         auto it = std::find_if(std::begin(discretization[i]),
                                std::end(discretization[i]),
@@ -51,7 +37,6 @@ double interp::getInterp(vector<double> x){
     }
 
     // compute the polynomials (already evaluated)
-//    double beta[dimension][4];
     for (int i=0; i<dimension; i++){
         // compute binomial coefficient
         beta[i][0] = (0.5*pow(u[i] - 1,3)*u[i]*(2*u[i] + 1));
@@ -127,46 +112,103 @@ double interp::getInterp(vector<double> x){
 
 
 
+double interp::getInterpStruct(vector<double> x){
+    assert(x.size() == dimension);
+
+    // get the index of the closest range value to the discretization point
+    for (int i=0; i<dimension; i++){
+        n[i] = floor((x[i]-dS[i].begin)/dS[i].gridsize);
+    }
+
+    // compute remaining fraction
+    for (int i=0; i<dimension; i++){
+        u[i] = (x[i]-(dS[i].begin + n[i]*dS[i].gridsize))/(dS[i].gridsize);
+    }
+
+    // compute the polynomials (already evaluated)
+    for (int i=0; i<dimension; i++){
+        // compute binomial coefficient
+        beta[i][0] = (0.5*pow(u[i] - 1,3)*u[i]*(2*u[i] + 1));
+        beta[i][1] = (-0.5*(u[i] - 1)*(6*pow(u[i],4) - 9*pow(u[i],3) + 2*u[i] + 2));
+        beta[i][2] = (0.5*u[i]*(6*pow(u[i],4) - 15*pow(u[i],3) + 9*pow(u[i],2) + u[i] + 1));
+        beta[i][3] = (-0.5*(u[i] - 1)*pow(u[i],3)*(2*u[i] - 3));
+    }
+
+    int discrLoopCnt[dimension] = {-1};
+
+    double z;
+    bool breakWhile = false;
+    bool allTrue;
+    double Beta = 1;
+
+
+    while (discrLoopCnt[0] < 3){
+        Beta = 1;
+        for (int i=0; i<dimension; i++){
+            Beta = Beta*beta[i][discrLoopCnt[i]+g];
+        }
+
+        for (int i=0; i<dimension; i++){
+            loc[i] = discrLoopCnt[i] + n[i];
+        }
+
+        z += getEvalFast()*Beta;
+
+        for (int x=dimension-1; x>=0; x--){
+            if (discrLoopCnt[x] != 2){
+                discrLoopCnt[x] += 1;
+                break;
+            }
+            if (discrLoopCnt[x] == 2){
+                for (int y=x; y<dimension; y++){
+                    discrLoopCnt[y] = -1;
+                }
+            }
+        }
+
+        // CHECKING EXIT CONDITIONS
+        if (breakWhile){
+            break;
+        }
+        allTrue = true;
+        for (int i=0; i<dimension; i++){
+            if (discrLoopCnt[i] != 2){
+                allTrue = false;
+                break;
+            }
+        }
+        if (allTrue){
+            breakWhile = true;
+        }
+    }
+    return z;
+}
+
+
 
 double interp::getInterpDer(vector<double> x, int coordinate){
-    if (x.size() != dimension){
-        std::cout << "Interpolation state not equal to object's dimension" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    if (coordinate > dimension-1){
-        std::cout << "Derivative coordinate outside dimension" << std::endl;
-        exit(EXIT_FAILURE);
-    }
+    assert(x.size() == dimension);
+    assert(coordinate <= dimension-1);
     // This is the main interpolation function
     // IN:  x, a vector of points within the considered interpolation range
     //      coordinate, the generalized coordinate of which we take the derivative
     // OUT: eval, the interpolated value
 
     // get the index of the closest range value to the discretization point
-    bool flag;
     for (int i=0; i<dimension; i++){
-        flag = false;
-        for (int ii=1; ii<discretization[i].size(); ii++){
-            if (x[i] - discretization[i][ii] < 0){
-                n[i] = ii-1;
-                flag = true;
-                break;
-            }
-        }
-        if (!flag){
-            std::cout << "Cannot compute 'n', see interp.ccp" << std::endl;
-            exit(EXIT_FAILURE);
-        }
+        auto it = std::find_if(std::begin(discretization[i]),
+                               std::end(discretization[i]),
+                               [&](double j){return j > x[i];});
+        n[i] = std::distance(discretization[i].begin(), it)-1;
     }
 
     // compute remaining fraction
     for (int i=0; i<dimension; i++){
-        u[i] = ((double)(x[i]-discretization[i][n[i]])/
-                (discretization[i][2]-discretization[i][1]));
+        u[i] = (x[i]-discretization[i][n[i]])/
+                (discretization[i][2]-discretization[i][1]);
     }
 
     // compute the polynomials (already evaluated)
-//    double beta[dimension][4];
     for (int i=0; i<dimension; i++){
         // compute binomial coefficient derivatives
         beta[i][0] = 5*pow(u[i],4) - 10*pow(u[i],3) + 4.5*pow(u[i],2) + u[i] - 0.5;
@@ -182,15 +224,60 @@ double interp::getInterpDer(vector<double> x, int coordinate){
     for (int i=0; i<4; i++){
         Beta = beta[coordinate][i];
         for (int j=0; j<dimension; j++){
-            loc[i] = n[j];
+            loc[j] = n[j];
         }
         loc[coordinate] += discrLoopCnt;
 
-        z += getEval()*Beta/
+        // this division (/) works for 1D but for nD things need to change
+        z += getEvalFast()*Beta/
                 (discretization[coordinate][1]-discretization[coordinate][0]);
 
         discrLoopCnt += 1;
     }
+//    int discrLoopCnt[dimension] = {-1};
+//    double z;
+//    bool breakWhile = false;
+//    bool allTrue;
+//    double Beta = 1;
+
+//    while (discrLoopCnt[0] < 3){
+//        Beta = 1;
+//        for (int i=0; i<dimension; i++){
+//            Beta = Beta*beta[i][discrLoopCnt[i]+g];
+//        }
+
+//        for (int i=0; i<dimension; i++){
+//            loc[i] = discrLoopCnt[i] + n[i];
+//        }
+//        z += getEvalFast()*Beta;
+
+
+//        // EXIT CONDITIONS
+//        for (int x=dimension-1; x>=0; x--){
+//            if (discrLoopCnt[x] != 2){
+//                discrLoopCnt[x] += 1;
+//                break;
+//            }
+//            if (discrLoopCnt[x] == 2){
+//                for (int y=x; y<dimension; y++){
+//                    discrLoopCnt[y] = -1;
+//                }
+//            }
+//        }
+//        if (breakWhile){
+//            break;
+//        }
+//        allTrue = true;
+//        for (int i=0; i<dimension; i++){
+//            if (discrLoopCnt[i] != 2){
+//                allTrue = false;
+//                break;
+//            }
+//        }
+//        if (allTrue){
+//            breakWhile = true;
+//        }
+//    }
     return z;
 }
 
@@ -223,6 +310,22 @@ double interp::getEval(){
 }
 
 
+
+
+//double z, Beta;
+//int discrLoopCnt = -1;
+//for (int i=0; i<4; i++){
+//    Beta = beta[coordinate][i];
+//    for (int j=0; j<dimension; j++){
+//        loc[i] = n[j];
+//    }
+//    loc[coordinate] += discrLoopCnt;
+
+//    z += getEval()*Beta/
+//            (discretization[coordinate][1]-discretization[coordinate][0]);
+
+//    discrLoopCnt += 1;
+//}
 
 //double interp::interpCubicHermiteSpline(vector<double> x, int derivativeOrder){
 //    // This is the main interpolation function
