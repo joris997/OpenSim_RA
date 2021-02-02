@@ -90,7 +90,6 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     if (!outfile.good()) {
         throw std::runtime_error{"error opening outfile"};
     }
-
     SimTK::State& state = model.initSystem();
 //    std::cout << "state: " << state.toString() << std::endl;
     model.equilibrateMuscles(state);
@@ -327,3 +326,23 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+
+
+
+
+
+
+
+//ImGui::Text("wrapping surfaces: ");
+//ImGui::SameLine();
+//if (ImGui::Button("disable")) {
+//OpenSim::Model& m = model;
+//for (OpenSim::WrapObjectSet& wos : m.updComponentList<OpenSim::WrapObjectSet>()) {
+//for (int i = 0; i < wos.getSize(); ++i) {
+//OpenSim::WrapObject& wo = wos[i];
+//wo.set_active(false);
+//wo.upd_Appearance().set_visible(false);
+//}
+//}
+//on_user_edited_model();
+//}

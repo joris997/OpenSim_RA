@@ -17,9 +17,10 @@ using OpenSim::GeometryPath;
 #include "testCaseDer.h"
 
 int main(){
+//    testCase1D();
     testCase2D();
-//    testCase2DDer();
 //    testCase1DDer();
+//    testCase2DDer();
 //    testCase2DOpenSim();
     return 0;
 }

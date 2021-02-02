@@ -51,19 +51,19 @@ void testCase2DDer(){
         for (int ii=0; ii<xRangeI.size(); ii++){
             x.clear();
             x.push_back(xRangeI[i]); x.push_back(xRangeI[ii]);
-            auto before = std::chrono::high_resolution_clock::now();
-            ans = a.getInterpDer(x,1);
-            auto after = std::chrono::high_resolution_clock::now();
-            auto dt = after - before;
-            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
-            ++count;
+//            auto before = std::chrono::high_resolution_clock::now();
+//            ans = a.getInterpDer(x,0);
+//            auto after = std::chrono::high_resolution_clock::now();
+//            auto dt = after - before;
+//            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+//            ++count;
 
             std::cout << "I: " << a.getInterpDer(x,0) << std::endl;
-            std::cout << "R: " << xRangeI[i] << std::endl;
+            std::cout << "R: " << xRangeI[ii] << std::endl;
         }
     }
-    interp_time /= count;
-    std::cout << "interp nanos = " << interp_time.count() << std::endl;
+//    interp_time /= count;
+//    std::cout << "interp nanos = " << interp_time.count() << std::endl;
 }
 
 

@@ -162,12 +162,14 @@ class interp{
             assert(discretization.size() == evalsPair[0].first.size());
 
             // allow it to work with the new struct method
-            Discretization dc;
             for (int i=0; i<dimension; i++){
+                Discretization dc;
                 dc.begin = discretization[i][0];
-                dc.end = discretization[i][discretization[i].size()];
+                dc.end = discretization[i][discretization[i].size()-1];
                 dc.nPoints = discretization[i].size();
-                dc.gridsize = (dc.end - dc.begin)/dc.nPoints;
+                dc.gridsize = (dc.end - dc.begin)/(dc.nPoints-1);
+                std::cout << "\n dc: " << std::endl;
+                std::cout << dc.begin<<" "<<dc.end<<" "<<dc.nPoints<<" "<<dc.gridsize<<std::endl;
                 dS.push_back(dc);
             }
 
