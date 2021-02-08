@@ -1,0 +1,153 @@
+Updating Model file from 20303 to latest format...
+Loaded model arm26 from file arm26.osim
+Couldn't find file 'ground_ribs.vtp'.
+Couldn't find file 'ground_spine.vtp'.
+Couldn't find file 'ground_skull.vtp'.
+Couldn't find file 'ground_jaw.vtp'.
+Couldn't find file 'ground_r_clavicle.vtp'.
+Couldn't find file 'ground_r_scapula.vtp'.
+Couldn't find file 'arm_r_humerus.vtp'.
+Couldn't find file 'arm_r_ulna.vtp'.
+Couldn't find file 'arm_r_radius.vtp'.
+Couldn't find file 'arm_r_lunate.vtp'.
+Couldn't find file 'arm_r_scaphoid.vtp'.
+Couldn't find file 'arm_r_pisiform.vtp'.
+Couldn't find file 'arm_r_triquetrum.vtp'.
+Couldn't find file 'arm_r_capitate.vtp'.
+Couldn't find file 'arm_r_trapezium.vtp'.
+Couldn't find file 'arm_r_trapezoid.vtp'.
+Couldn't find file 'arm_r_hamate.vtp'.
+Couldn't find file 'arm_r_1mc.vtp'.
+Couldn't find file 'arm_r_2mc.vtp'.
+Couldn't find file 'arm_r_3mc.vtp'.
+Couldn't find file 'arm_r_4mc.vtp'.
+Couldn't find file 'arm_r_5mc.vtp'.
+Couldn't find file 'arm_r_thumbprox.vtp'.
+Couldn't find file 'arm_r_thumbdist.vtp'.
+Couldn't find file 'arm_r_2proxph.vtp'.
+Couldn't find file 'arm_r_2midph.vtp'.
+Couldn't find file 'arm_r_2distph.vtp'.
+Couldn't find file 'arm_r_3proxph.vtp'.
+Couldn't find file 'arm_r_3midph.vtp'.
+Couldn't find file 'arm_r_3distph.vtp'.
+Couldn't find file 'arm_r_4proxph.vtp'.
+Couldn't find file 'arm_r_4midph.vtp'.
+Couldn't find file 'arm_r_4distph.vtp'.
+Couldn't find file 'arm_r_5proxph.vtp'.
+Couldn't find file 'arm_r_5midph.vtp'.
+Couldn't find file 'arm_r_5distph.vtp'.
+ControllerSet 'Controllers' was renamed and is being reset to 'controllerset'.
+ComponentSet 'MiscComponents' was renamed and is being reset to 'componentset'.
+Updating Model file from 30000 to latest format...
+Loaded model ToyLandingModel from file ToyLandingModel.osim
+Couldn't find file 'sacrum.vtp'.
+Couldn't find file 'pelvis.vtp'.
+Couldn't find file 'l_pelvis.vtp'.
+Couldn't find file 'femur_r.vtp'.
+Couldn't find file 'tibia_r.vtp'.
+Couldn't find file 'fibula.vtp'.
+Couldn't find file 'talus.vtp'.
+Couldn't find file 'foot.vtp'.
+Couldn't find file 'bofoot.vtp'.
+Couldn't find file 'femur_l.vtp'.
+Couldn't find file 'tibia_l.vtp'.
+Couldn't find file 'l_fibula.vtp'.
+Couldn't find file 'l_talus.vtp'.
+Couldn't find file 'l_foot.vtp'.
+Couldn't find file 'l_bofoot.vtp'.
+Couldn't find file 'hat_spine.vtp'.
+Couldn't find file 'hat_jaw.vtp'.
+Couldn't find file 'hat_skull.vtp'.
+Couldn't find file 'hat_ribs.vtp'.
+Updating Model file from 30000 to latest format...
+Loaded model ToyLandingModel from file ToyLandingModel.osim
+Couldn't find file 'sacrum.vtp'.
+Couldn't find file 'pelvis.vtp'.
+Couldn't find file 'l_pelvis.vtp'.
+Couldn't find file 'femur_r.vtp'.
+Couldn't find file 'tibia_r.vtp'.
+Couldn't find file 'fibula.vtp'.
+Couldn't find file 'talus.vtp'.
+Couldn't find file 'foot.vtp'.
+Couldn't find file 'bofoot.vtp'.
+Couldn't find file 'femur_l.vtp'.
+Couldn't find file 'tibia_l.vtp'.
+Couldn't find file 'l_fibula.vtp'.
+Couldn't find file 'l_talus.vtp'.
+Couldn't find file 'l_foot.vtp'.
+Couldn't find file 'l_bofoot.vtp'.
+Couldn't find file 'hat_spine.vtp'.
+Couldn't find file 'hat_jaw.vtp'.
+Couldn't find file 'hat_skull.vtp'.
+Couldn't find file 'hat_ribs.vtp'.
+Updating Model file from 30000 to latest format...
+Loaded model Tug_of_War from file Tug_of_War.osim
+Couldn't find file 'block.vtp'.
+Couldn't find file 'block.vtp'.
+Couldn't find file 'checkered_floor.vtp'.
+Couldn't find file 'block.vtp'.
+ControllerSet 'Controllers' was renamed and is being reset to 'controllerset'.
+ComponentSet 'MiscComponents' was renamed and is being reset to 'componentset'.
+Updating Model file from 30000 to latest format...
+Loaded model ToyLandingModel from file ToyLandingModel.osim
+Couldn't find file 'sacrum.vtp'.
+Couldn't find file 'pelvis.vtp'.
+Couldn't find file 'l_pelvis.vtp'.
+Couldn't find file 'femur_r.vtp'.
+Couldn't find file 'tibia_r.vtp'.
+Couldn't find file 'fibula.vtp'.
+Couldn't find file 'talus.vtp'.
+Couldn't find file 'foot.vtp'.
+Couldn't find file 'bofoot.vtp'.
+Couldn't find file 'femur_l.vtp'.
+Couldn't find file 'tibia_l.vtp'.
+Couldn't find file 'l_fibula.vtp'.
+Couldn't find file 'l_talus.vtp'.
+Couldn't find file 'l_foot.vtp'.
+Couldn't find file 'l_bofoot.vtp'.
+Couldn't find file 'hat_spine.vtp'.
+Couldn't find file 'hat_jaw.vtp'.
+Couldn't find file 'hat_skull.vtp'.
+Couldn't find file 'hat_ribs.vtp'.
+Updating Model file from 30000 to latest format...
+Loaded model ToyLandingModel from file ToyLandingModel.osim
+Couldn't find file 'sacrum.vtp'.
+Couldn't find file 'pelvis.vtp'.
+Couldn't find file 'l_pelvis.vtp'.
+Couldn't find file 'femur_r.vtp'.
+Couldn't find file 'tibia_r.vtp'.
+Couldn't find file 'fibula.vtp'.
+Couldn't find file 'talus.vtp'.
+Couldn't find file 'foot.vtp'.
+Couldn't find file 'bofoot.vtp'.
+Couldn't find file 'femur_l.vtp'.
+Couldn't find file 'tibia_l.vtp'.
+Couldn't find file 'l_fibula.vtp'.
+Couldn't find file 'l_talus.vtp'.
+Couldn't find file 'l_foot.vtp'.
+Couldn't find file 'l_bofoot.vtp'.
+Couldn't find file 'hat_spine.vtp'.
+Couldn't find file 'hat_jaw.vtp'.
+Couldn't find file 'hat_skull.vtp'.
+Couldn't find file 'hat_ribs.vtp'.
+Updating Model file from 30000 to latest format...
+Loaded model ToyLandingModel from file ToyLandingModel.osim
+Couldn't find file 'sacrum.vtp'.
+Couldn't find file 'pelvis.vtp'.
+Couldn't find file 'l_pelvis.vtp'.
+Couldn't find file 'femur_r.vtp'.
+Couldn't find file 'tibia_r.vtp'.
+Couldn't find file 'fibula.vtp'.
+Couldn't find file 'talus.vtp'.
+Couldn't find file 'foot.vtp'.
+Couldn't find file 'bofoot.vtp'.
+Couldn't find file 'femur_l.vtp'.
+Couldn't find file 'tibia_l.vtp'.
+Couldn't find file 'l_fibula.vtp'.
+Couldn't find file 'l_talus.vtp'.
+Couldn't find file 'l_foot.vtp'.
+Couldn't find file 'l_bofoot.vtp'.
+Couldn't find file 'hat_spine.vtp'.
+Couldn't find file 'hat_jaw.vtp'.
+Couldn't find file 'hat_skull.vtp'.
+Couldn't find file 'hat_ribs.vtp'.

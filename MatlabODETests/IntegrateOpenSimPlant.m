@@ -117,9 +117,9 @@ function OutputData = IntegrateOpenSimPlant(osimModel, controlsFuncHandle,...
     OutputData.inDegrees = false;
     OutputData.labels = cell(1,OutputData.nColumns); 
     OutputData.labels{1}= 'time';
-    for j = 2:1:OutputData.nColumns
-        OutputData.labels{j} = char(osimModel.getStateVariableNames().getitem(j-2));
-    end
+%     for j = 2:1:OutputData.nColumns
+%         OutputData.labels{j} = char(osimModel.getStateVariableNames().getitem(j-2));
+%     end
     OutputData.data = [T, Y];
 end
 

@@ -2,17 +2,18 @@
 import org.opensim.modeling.*
 
 %% Instantiate model
-modelDir = '../Model/';
+modelDir = 'models/';
 importModel = true;
-models = {'arm26.osim',
-          'double_pendulum.osim',
-          'gait10dof18musc.osim',
-          'gait2354_simbody.osim',
-          'gait2392_millard2012muscle.osim',
-          'Rajagopal2015.osim',
-          'SoccerKickingModel.osim',
-          'ToyLandingModel.osim',
-          'Tug_of_War.osim'};
+% models = {'arm26.osim',
+%           'double_pendulum.osim',
+%           'gait10dof18musc.osim',
+%           'gait2354_simbody.osim',
+%           'gait2392_millard2012muscle.osim',
+%           'Rajagopal2015.osim',
+%           'SoccerKickingModel.osim',
+%           'ToyLandingModel.osim',
+%           'Tug_of_War.osim'};
+models = {'ToyLandingModel.osim'};
           
 odeNames = {'ode45','ode23','ode113', ...
             'ode15s','ode23s','ode23t','ode23tb'};
@@ -35,7 +36,7 @@ for modeli = 1:length(models)
         disp(['Starting ', integratorName, ' simulation'])
 
         time = 0;
-        nSim = 3;
+        nSim = 1;
         for ii = 1:nSim
             % Reconfigure the model.
             state = model.initSystem();
