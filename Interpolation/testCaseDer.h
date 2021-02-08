@@ -58,7 +58,7 @@ void testCase2DDer(){
 //            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
 //            ++count;
 
-            std::cout << "I: " << a.getInterpDer(x,0) << std::endl;
+            std::cout << "\nI: " << a.getInterpDer(x,0) << std::endl;
             std::cout << "R: " << xRangeI[ii] << std::endl;
         }
     }

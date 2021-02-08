@@ -1,8 +1,0 @@
-Rajagopal_2015: 0 - 0.5 seconds
-simTime(0): 3750    ExplicitEuler
-simTime(1): 7162    RK2
-simTime(2): 5275    RK3
-simTime(3): 13472   RK Feldberg
-simTime(4): 7014    RK Merson
-simTime(5): 2366    SemiExplicitEuler2
-simTime(6): 7245    Verlet

@@ -51,4 +51,5 @@ add_subdirectory(Wrapping_speed)
 add_subdirectory(Interpolation)
 add_subdirectory(Integration/ImplicitIntegration)
 add_subdirectory(Integration/CPodesIntegration)
+add_subdirectory(Integration/DifferentIntegration)
 

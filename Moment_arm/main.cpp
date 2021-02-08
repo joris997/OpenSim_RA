@@ -285,6 +285,7 @@ int main(int argc, char** argv) {
     // load user-provided osim file
     OpenSim::Model model{argv[0]};
 
+
     if (disable_wrapping) {
         OpenSim::ComponentList<OpenSim::WrapObjectSet> l =
                 model.updComponentList<OpenSim::WrapObjectSet>();

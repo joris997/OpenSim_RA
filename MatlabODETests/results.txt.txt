@@ -11,3 +11,8 @@ Rajagopal2015       70.6151   53.8768   8.8923    399.997   0         0         
                     0         0         0         0         0         0         0
                     0         0         0         0         0         0         0
                     0         0         0         0         0         0         0
+
+ode113 wins on all simulations
+
+I stopped the simulating after a whole night of simulations. The rajagopal ode23s
+combi took something like 10000 sec (2.7) hours

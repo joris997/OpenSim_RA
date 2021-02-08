@@ -63,37 +63,78 @@ void testCase2DOpenSim(){
     auto reset_c2_val = defer_action([&] { c2.setValue(st, c2_initial_value); });
 
     // make discretization objects for interpolation class instance
-    int num_steps = 101;
+    int num_steps = 12;
     Discretization dc1, dc2;
     vector<Discretization> discretization;
-    dc1.begin = c1.getRangeMin();
-    dc1.end = c1.getRangeMax();
-    dc1.nPoints = num_steps;
-    dc1.gridsize = (dc1.end-dc1.begin) / dc1.nPoints;
+    dc1.begin    = c1.getRangeMin();
+    dc1.end      = c1.getRangeMax();
+    dc1.nPoints  = num_steps;
+    dc1.gridsize = (dc1.end-dc1.begin)/dc1.nPoints;
 
-    dc2.begin = c2.getRangeMin();
-    dc2.end = c2.getRangeMax();
-    dc2.nPoints = num_steps;
-    dc2.gridsize = (dc2.end-dc2.begin) / dc2.nPoints;
+    dc2.begin    = c2.getRangeMin();
+    dc2.end      = c2.getRangeMax();
+    dc2.nPoints  = num_steps;
+    dc2.gridsize = (dc2.end-dc2.begin)/dc2.nPoints;
 
     discretization.push_back(dc1);
     discretization.push_back(dc2);
 
     // Create an interpolation object
+    vector<int> discretizationNPoints;
+    discretizationNPoints.push_back(num_steps);
+    discretizationNPoints.push_back(num_steps);
+
+//    Coordinate const** cBegin = (&affecting_coords[0]);
+//    Coordinate const** cEnd = (&affecting_coords[1]);
+//    interp a = interp(*muscle,
+//                      cBegin,
+//                      cEnd,
+//                      st,
+//                      discretizationNPoints);
     interp a = interp(*muscle,
                       *affecting_coords[0],
                       *affecting_coords[1],
                       st,
-                      discretization);
+                      discretizationNPoints,
+                      true);
 
+    // Create vectors of points to be evaluated
     vector<double> x;
-    vector<double> xRange; linspace(xRange,dc1.begin,dc1.end,33);
-    vector<double> yRange; linspace(yRange,dc2.begin,dc2.end,33);
+    vector<double> xRange; linspace(xRange,dc1.begin,dc1.end,10);
+    vector<double> yRange; linspace(yRange,dc2.begin,dc2.end,10);
     std::chrono::nanoseconds interp_time{0};
     std::chrono::nanoseconds interpS_time{0};
     std::chrono::nanoseconds real_time{0};
     int count = 0;
     double ans = 0;
+    for (int i=0; i<xRange.size(); i++){
+        for (int ii=0; ii<yRange.size(); ii++){
+            x.clear();
+            x.push_back(xRange[i]);
+            x.push_back(yRange[ii]);
+
+            auto before = std::chrono::high_resolution_clock::now();
+            ans = a.getInterp(x);
+            auto after = std::chrono::high_resolution_clock::now();
+            auto dt = after - before;
+            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+
+            ++count;
+        }
+    }
+    for (int i=0; i<xRange.size(); i++){
+        for (int ii=0; ii<yRange.size(); ii++){
+            x.clear();
+            x.push_back(xRange[i]);
+            x.push_back(yRange[ii]);
+
+            auto before = std::chrono::high_resolution_clock::now();
+            ans = a.getInterpStruct(x);
+            auto after = std::chrono::high_resolution_clock::now();
+            auto dt = after - before;
+            interpS_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+        }
+    }
     for (int i=0; i<xRange.size(); i++){
         double c1v = xRange[i];
         c1.setValue(st, c1v);
@@ -107,29 +148,16 @@ void testCase2DOpenSim(){
             x.push_back(yRange[ii]);
 
             auto before = std::chrono::high_resolution_clock::now();
-            ans = a.getInterp(x);
+            ans = musc_path.getLength(st);
             auto after = std::chrono::high_resolution_clock::now();
             auto dt = after - before;
-            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
-
-            before = std::chrono::high_resolution_clock::now();
-            ans = a.getInterpStruct(x);
-            after = std::chrono::high_resolution_clock::now();
-            dt = after - before;
-            interpS_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
-
-            before = std::chrono::high_resolution_clock::now();
-            ans = musc_path.getLength(st);
-            after = std::chrono::high_resolution_clock::now();
-            dt = after - before;
             real_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
 
-            std::cout << "I:  " << a.getInterp(x) << std::endl;
-            std::cout << "Is: " << a.getInterpStruct(x) << std::endl;
-            std::cout << "R:  " << musc_path.getLength(st) << std::endl;
-            ++count;
+            std::cout << "\ninterp: " << a.getInterpStruct(x) << std::endl;
+            std::cout << "real:   " << musc_path.getLength(st) << std::endl;
         }
     }
+
     interp_time /= count;
     interpS_time /= count;
     real_time /= count;
@@ -178,29 +206,35 @@ void testCase2D(){
         for (int ii=0; ii<xRangeI.size(); ii++){
             x.clear();
             x.push_back(xRangeI[i]); x.push_back(xRangeI[ii]);
-//            auto before = std::chrono::high_resolution_clock::now();
-//            ans = a.getInterp(x);
-//            auto after = std::chrono::high_resolution_clock::now();
-//            auto dt = after - before;
-//            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
 
-//            before = std::chrono::high_resolution_clock::now();
-//            ans = a.getInterpStruct(x);
-//            after = std::chrono::high_resolution_clock::now();
-//            dt = after - before;
-//            interpS_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+            auto before = std::chrono::high_resolution_clock::now();
+            ans = a.getInterp(x);
+            auto after = std::chrono::high_resolution_clock::now();
+            auto dt = after - before;
+            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
 
+            std::cout << "\ninterp:  " << a.getInterp(x) << std::endl;
+            std::cout << "interpS: " << a.getInterpStruct(x) << std::endl;
+            std::cout << "real:    " << xRangeI[i]*xRangeI[ii] << std::endl;
             ++count;
-
-            std::cout << "I:  " << a.getInterp(x) << std::endl;
-            std::cout << "Is: " << a.getInterpStruct(x) << std::endl;
-            std::cout << "R:  " << xRangeI[i]*xRangeI[ii] << std::endl;
         }
     }
-//    interp_time /= count;
-//    interpS_time /= count;
-//    std::cout << "interp nanos  = " << interp_time.count() << std::endl;
-//    std::cout << "interpS nanos = " << interpS_time.count() << std::endl;
+    for (int i=0; i<xRangeI.size(); i++){
+        for (int ii=0; ii<xRangeI.size(); ii++){
+            x.clear();
+            x.push_back(xRangeI[i]); x.push_back(xRangeI[ii]);
+
+            auto before = std::chrono::high_resolution_clock::now();
+            ans = a.getInterpStruct(x);
+            auto after = std::chrono::high_resolution_clock::now();
+            auto dt = after - before;
+            interpS_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+        }
+    }
+    interp_time /= count;
+    interpS_time /= count;
+    std::cout << "interp nanos  = " << interp_time.count() << std::endl;
+    std::cout << "interpS nanos = " << interpS_time.count() << std::endl;
 }
 
 
