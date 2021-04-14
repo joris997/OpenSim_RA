@@ -1,10 +1,8 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
-#include "interp.h"
-
-#include <OpenSim/Simulation/Model/Model.h>
-#include <OpenSim/Simulation/SimulationUtilities.h>
+#include "Interpolate.h"
+#include <OpenSim/OpenSim.h>
 
 using std::vector;
 using std::pair;
@@ -18,10 +16,12 @@ using OpenSim::GeometryPath;
 
 int main(){
 //    testCase1D();
-//    testCase2D();
+    testCase2D();
 //    testCase1DDer();
 //    testCase2DDer();
-    testCase2DOpenSim();
+//    testCase2DOpenSim();
+//    testCase3DOpenSim();
+//    testCaseHopper();
     return 0;
 }
 

@@ -1,0 +1,1 @@
+/usr/bin/g++    -rdynamic CMakeFiles/testSpline.dir/testSpline.cpp.o CMakeFiles/testSpline.dir/SplineData.cpp.o CMakeFiles/testSpline.dir/__/src/SplineBasisFunction.cpp.o  -o testSpline 

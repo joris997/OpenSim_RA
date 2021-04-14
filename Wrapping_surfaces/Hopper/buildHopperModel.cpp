@@ -249,7 +249,7 @@ Model buildHopper(bool showVisualizer, const std::string& patella_shape) {
 
     if(showVisualizer)
         hopper.setUseVisualizer(true);
-    
+
     return hopper;
 }
 

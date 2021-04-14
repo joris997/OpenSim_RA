@@ -4,7 +4,7 @@
 #include <fstream>
 
 int main(){
-    bool visualize = false;
+    bool visualize = true;
 
 //    OpenSim::Model model{"arm26.osim"};
     std::vector<std::string> integrators;
@@ -17,17 +17,24 @@ int main(){
     integrators.push_back("Verlet");
 
     std::vector<std::string> models;
-    models.push_back("Rajagopal_2015.osim");
-    models.push_back("arm26.osim");
-    models.push_back("gait10dof18musc.osim");
-    models.push_back("gait2354_simbody.osim");
-    models.push_back("gait2392_millard2012muscle.osim");
-    models.push_back("gait2392_thelen2003muscle.osim");
-    models.push_back("leg39.osim");
+//    models.push_back("Rajagopal_2015.osim");
+//    models.push_back("arm26.osim");
+//    models.push_back("gait10dof18musc.osim");
+//    models.push_back("gait2354_simbody.osim");
+//    models.push_back("gait2392_millard2012muscle.osim");
+//    models.push_back("gait2392_thelen2003muscle.osim");
+//    models.push_back("leg39.osim");
+//    models.push_back("Rajagopal2015_opensense.osim");
+//    models.push_back("Adjusted_ULBmodel.osim");
+//    models.push_back("InPhase6_RRA.osim");
+
+    models.push_back("FullBodyModel_SimpleArms_Hamner2010_Markers_v2_0.osim");
     models.push_back("SoccerKickingModel.osim");
+    models.push_back("arm26.osim");
+    models.push_back("Ostrich_Walk_Rigid_Tendon.osim");
     models.push_back("Tug_of_War.osim");
     models.push_back("ToyLandingModel.osim");
-
+//    models.push_back("GIL12_gait2392_simbody_adjusted.osim");
     std::ofstream myfile;
     myfile.open("solver_results.txt");
     for (auto& modeli : models){
@@ -60,7 +67,7 @@ int main(){
                 manager.initialize(state);
 
                 auto before = std::chrono::high_resolution_clock::now();
-                manager.integrate(0.5);
+                manager.integrate(2);
                 auto after = std::chrono::high_resolution_clock::now();
                 auto dt = after - before;
                 simTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);

@@ -11,7 +11,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 # so that CLion/qtcreator can open your project without further
 # configuring
-list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim-core-install/lib/cmake/")
+#list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim-core-joris-install/lib/cmake/")
+#list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim/hacking/RelWithDebInfo-install/lib/cmake")
+list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim/interpolation/RelWithDebInfo-install/lib/cmake")
+#list(APPEND CMAKE_PREFIX_PATH "/home/none/opensim/source/RelWithDebInfo-install/lib/cmake")
 
 find_package(OpenSim REQUIRED)
 find_package(Simbody REQUIRED)
@@ -41,15 +44,19 @@ target_compile_options(common_options_target INTERFACE
   "$<$<CXX_COMPILER_ID:GNU>:-Wno-unknown-pragmas>"
   "$<$<CXX_COMPILER_ID:Clang>:-Wno-unknown-pragmas>")
 
-add_subdirectory(Moment_arm)
-add_subdirectory(Wrapping_analytical)
-add_subdirectory(Wrapping_surfaces/Hopper)
-add_subdirectory(Wrapping_surfaces/Ellipsoid_test)
-add_subdirectory(Wrapping_surfaces/WrappingSurfaces)
-add_subdirectory(Wrapping_cables)
-add_subdirectory(Wrapping_speed)
-add_subdirectory(Interpolation)
-add_subdirectory(Integration/ImplicitIntegration)
-add_subdirectory(Integration/CPodesIntegration)
-add_subdirectory(Integration/DifferentIntegration)
-
+#add_subdirectory(Moment_arm)
+#add_subdirectory(Wrapping_analytical)
+#add_subdirectory(Wrapping_surfaces/Hopper)
+#add_subdirectory(Wrapping_surfaces/Ellipsoid_test)
+#add_subdirectory(Wrapping_surfaces/WrappingSurfaces)
+#add_subdirectory(Wrapping_cables)
+#add_subdirectory(Wrapping_speed)
+#add_subdirectory(Interpolation)
+#add_subdirectory(Integration/ImplicitIntegration)
+#add_subdirectory(Integration/CPodesIntegration)
+#add_subdirectory(Integration/DifferentIntegration)
+#add_subdirectory(Random_tests)
+#add_subdirectory(Integration/ForwardTool)
+#add_subdirectory(Interpolation_tool)
+#add_subdirectory(Interpolation_MTU)
+add_subdirectory(Interpolation_CBS/Joris)

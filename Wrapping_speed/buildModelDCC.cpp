@@ -70,7 +70,8 @@ void buildWrappingModelIndividual(Model& model, const testCase& tc,
 
 
     // SPRING
-    auto spring = new PathSpring("spring"+type, tc.REST_LENGTH, tc.STIFFNESS, tc.DISSIPATION);
+    auto spring = new Millard2012EquilibriumMuscle("muscle"+type,10,0.1,0.01,0);
+//    auto spring = new PathSpring("spring"+type, tc.REST_LENGTH, tc.STIFFNESS, tc.DISSIPATION);
     // WRAPPING SURFACE
     auto wrappingFrame = new PhysicalOffsetFrame("wrappingFrame"+type, model.getGround(),
                                                  SimTK::Transform(Vec3(0, tc.CYLINDER_HEIGHT, offset)));
@@ -156,6 +157,9 @@ Model buildWrappingModel(const testCase& tc) {
     if (showVisualizer)
         model.setUseVisualizer(true);
 
+    model.finalizeConnections();
+    model.initSystem();
+    model.buildSystem();
     return model;
 }
 

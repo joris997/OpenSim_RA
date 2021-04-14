@@ -78,22 +78,27 @@ void run(bool showVisualizer, double finalTime);
 
 
 int main(int argc, char* argv[]) {
-    // Suppress/show visualizer.
-    bool showVisualizer{true};
+//    // Suppress/show visualizer.
+//    bool showVisualizer{true};
 
-    for(int i = 0; i < argc; ++i)
-        if(strcmp(argv[i], "noVisualizer") == 0)
-            showVisualizer = false;
+//    for(int i = 0; i < argc; ++i)
+//        if(strcmp(argv[i], "noVisualizer") == 0)
+//            showVisualizer = false;
 
-    try {
-        run(showVisualizer, FINAL_TIME);
-    }
-    catch (const std::exception& ex) {
-        std::cout << "Hopper Example Failed to run due to the following Exception: "
-                  << ex.what() << std::endl;
-        return 1;
-    }
-    return 0;
+//    try {
+//        run(showVisualizer, FINAL_TIME);
+//    }
+//    catch (const std::exception& ex) {
+//        std::cout << "Hopper Example Failed to run due to the following Exception: "
+//                  << ex.what() << std::endl;
+//        return 1;
+//    }
+//    return 0;
+    std::string wrap_surface = "cylinder";
+    OpenSim::Model hopper = OpenSim::buildHopper(true,wrap_surface);
+    hopper.finalizeConnections();
+    hopper.print("Hopper.osim");
+
 }
 
 

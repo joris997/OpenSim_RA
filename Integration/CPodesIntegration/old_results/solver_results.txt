@@ -1,0 +1,90 @@
+
+Rajagopal_2015.osim
+simTime(0): 3331	ExplicitEuler
+simTime(1): 7310	RungeKutta2
+simTime(2): 5520	RungeKutta3
+simTime(3): 14269	RungeKuttaFeldberg
+simTime(4): 7250	RungeKuttaMerson
+simTime(5): 1970	SemiExplicitEuler2  WIN
+simTime(6): 8513	Verlet
+
+arm26.osim
+simTime(0): 1414	ExplicitEuler       WIN
+simTime(1): 2507	RungeKutta2
+simTime(2): 2984	RungeKutta3
+simTime(3): 15593	RungeKuttaFeldberg
+simTime(4): 4641	RungeKuttaMerson
+simTime(5): 1452	SemiExplicitEuler2
+simTime(6): 4215	Verlet
+
+gait10dof18musc.osim
+simTime(0): 198         ExplicitEuler       WIN
+simTime(1): 342         RungeKutta2
+simTime(2): 352         RungeKutta3
+simTime(3): 777         RungeKuttaFeldberg
+simTime(4): 420         RungeKuttaMerson
+simTime(5): 238         SemiExplicitEuler2
+simTime(6): 881         Verlet
+
+gait2354_simbody.osim
+simTime(0): 439         ExplicitEuler       WIN
+simTime(1): 823         RungeKutta2
+simTime(2): 730         RungeKutta3
+simTime(3): 2396	RungeKuttaFeldberg
+simTime(4): 855         RungeKuttaMerson
+simTime(5): 583         SemiExplicitEuler2
+simTime(6): 1999	Verlet
+
+gait2392_millard2012muscle.osim
+simTime(0): 2119	ExplicitEuler       WIN
+simTime(1): 4242	RungeKutta2
+simTime(2): 4984	RungeKutta3
+simTime(3): 14297	RungeKuttaFeldberg
+simTime(4): 5619	RungeKuttaMerson
+simTime(5): 2857	SemiExplicitEuler2
+simTime(6): 13179	Verlet
+
+gait2392_thelen2003muscle.osim
+simTime(0): 1005	ExplicitEuler       WIN
+simTime(1): 4384	RungeKutta2
+simTime(2): 3625	RungeKutta3
+simTime(3): 11082	RungeKuttaFeldberg
+simTime(4): 3534	RungeKuttaMerson
+simTime(5): 1492	SemiExplicitEuler2
+simTime(6): 4396	Verlet
+
+leg39.osim
+simTime(0): 126         ExplicitEuler
+simTime(1): 198         RungeKutta2
+simTime(2): 244         RungeKutta3
+simTime(3): 549         RungeKuttaFeldberg
+simTime(4): 228         RungeKuttaMerson
+simTime(5): 122         SemiExplicitEuler2  WIN
+simTime(6): 983         Verlet
+
+SoccerKickingModel.osim
+simTime(0): 1044	ExplicitEuler
+simTime(1): 1902	RungeKutta2
+simTime(2): 1571	RungeKutta3
+simTime(3): 5414	RungeKuttaFeldberg
+simTime(4): 2152	RungeKuttaMerson
+simTime(5): 758         SemiExplicitEuler2  WIN
+simTime(6): 5034	Verlet
+
+Tug_of_War.osim
+simTime(0): 52          ExplicitEuler
+simTime(1): 72          RungeKutta2
+simTime(2): 64          RungeKutta3
+simTime(3): 260         RungeKuttaFeldberg
+simTime(4): 81          RungeKuttaMerson
+simTime(5): 26          SemiExplicitEuler2  WIN
+simTime(6): 159         Verlet
+
+ToyLandingModel.osim
+simTime(0): 15997	ExplicitEuler
+simTime(1): 29218	RungeKutta2
+simTime(2): 34095	RungeKutta3
+simTime(3): 104480	RungeKuttaFeldberg
+simTime(4): 21342	RungeKuttaMerson
+simTime(5): 5977	SemiExplicitEuler2  WIN
+simTime(6): 58789	Verlet

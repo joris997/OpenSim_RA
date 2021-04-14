@@ -1,6 +1,7 @@
 #include <OpenSim/Simulation/Model/Model.h>
 #include <OpenSim/Simulation/SimulationUtilities.h>
 
+#include <fstream>
 #include <iostream>
 #include <cstring>
 #include <cmath>
@@ -88,7 +89,7 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     // HACK: this just always outputs moment arms here
     std::ofstream outfile{"tmp/coords"};
     if (!outfile.good()) {
-        throw std::runtime_error{"error opening outfile"};
+        throw std::runtime_error{"error opening outfile tmp/coords"};
     }
     SimTK::State& state = model.initSystem();
 //    std::cout << "state: " << state.toString() << std::endl;
@@ -167,41 +168,44 @@ static void perform_spline_analysis(OpenSim::Model& model) {
     // output #2: list of muscle-to-coordinates associations
     std::vector<std::string> associated_coords;
     std::ofstream assocs{"tmp/assocs"};
+    if (!assocs.good()) {
+        throw std::runtime_error{"error opening outfile tmp/assocs"};
+    }
 
     for (auto const& m : model.getComponentList<OpenSim::Muscle>()) {
         if (m.getName() == "gaslat_l"){
-        associated_coords.clear();
+            associated_coords.clear();
 
-        for (OpenSim::Coordinate const* c : coords) {
-            std::cout << "coord: " << c->getName() << std::endl;
-            char const* label = "undefined     ";
+            for (OpenSim::Coordinate const* c : coords) {
+                std::cout << "coord: " << c->getName() << std::endl;
+                char const* label = "undefined     ";
 
-            switch (c->getMotionType()) {
-            case Coordinate::MotionType::Rotational:
-                label = "rotational    ";
-                break;
-            case Coordinate::MotionType::Translational:
-                label = "translational ";
-                break;
-            case Coordinate::MotionType::Coupled:
-                label = "coupled       ";
-                break;
-            default:
-                break;
+                switch (c->getMotionType()) {
+                case Coordinate::MotionType::Rotational:
+                    label = "rotational    ";
+                    break;
+                case Coordinate::MotionType::Translational:
+                    label = "translational ";
+                    break;
+                case Coordinate::MotionType::Coupled:
+                    label = "coupled       ";
+                    break;
+                default:
+                    break;
+                }
+
+                if (handle_coord(m, *c, label)) {
+                    associated_coords.push_back(c->getName());
+                }
             }
 
-            if (handle_coord(m, *c, label)) {
-                associated_coords.push_back(c->getName());
+            if (!associated_coords.empty()) {
+                assocs << m.getName() << "(" << associated_coords.size() << "): ";
+                for (size_t i = 0; i < associated_coords.size()-1; ++i) {
+                    assocs << associated_coords[i] << " ";
+                }
+                assocs << associated_coords[associated_coords.size()-1] << std::endl;
             }
-        }
-
-        if (!associated_coords.empty()) {
-            assocs << m.getName() << "(" << associated_coords.size() << "): ";
-            for (size_t i = 0; i < associated_coords.size()-1; ++i) {
-                assocs << associated_coords[i] << " ";
-            }
-            assocs << associated_coords[associated_coords.size()-1] << std::endl;
-        }
         }
     }
 }
@@ -213,7 +217,7 @@ int main(int argc, char** argv) {
     --argc;
     ++argv;
 
-    bool visualize = true;
+    bool visualize = false;
     bool disable_wrapping = false;
     char const* format = nullptr;
 
@@ -285,6 +289,9 @@ int main(int argc, char** argv) {
     // load user-provided osim file
     OpenSim::Model model{argv[0]};
 
+    for (auto const& m : model.getComponentList<OpenSim::Muscle>()) {
+        std::cout << "Muscle: " << m.getName() << std::endl;
+    }
 
     if (disable_wrapping) {
         OpenSim::ComponentList<OpenSim::WrapObjectSet> l =

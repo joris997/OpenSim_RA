@@ -77,7 +77,8 @@ Model buildWrappingModel(const testCase& tc) {
 
 
     // SPRING
-    auto spring = new PathSpring("spring", tc.REST_LENGTH, tc.STIFFNESS, tc.DISSIPATION);
+    auto spring = new Millard2012EquilibriumMuscle("muscle"+type,0.1,0.1,0.01,0);
+//    auto spring = new PathSpring("spring", tc.REST_LENGTH, tc.STIFFNESS, tc.DISSIPATION);
     spring->updGeometryPath().appendNewPathPoint("origin", *bodyLeft, Vec3(0));
     spring->updGeometryPath().appendNewPathPoint("insertion", *bodyRight, Vec3(0));
 

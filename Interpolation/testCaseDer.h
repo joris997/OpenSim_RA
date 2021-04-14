@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <chrono>
-#include "interp.h"
+#include "Interpolate.h"
 
 #include <OpenSim/Simulation/Model/Model.h>
 #include <OpenSim/Simulation/SimulationUtilities.h>
@@ -40,10 +40,10 @@ void testCase2DDer(){
     }
 
     // Create an interpolation object
-    interp a = interp(discretization,evalsPair);
+    Interpolate a = Interpolate(discretization,evalsPair);
 
     vector<double> x;
-    vector<double> xRangeI; linspace(xRangeI,0.5123,9.5123,25);
+    vector<double> xRangeI; linspace(xRangeI,0.5123,9.5123,5);
     std::chrono::nanoseconds interp_time{0};
     int count = 0;
     double ans = 0;
@@ -51,19 +51,20 @@ void testCase2DDer(){
         for (int ii=0; ii<xRangeI.size(); ii++){
             x.clear();
             x.push_back(xRangeI[i]); x.push_back(xRangeI[ii]);
-//            auto before = std::chrono::high_resolution_clock::now();
-//            ans = a.getInterpDer(x,0);
-//            auto after = std::chrono::high_resolution_clock::now();
-//            auto dt = after - before;
-//            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
-//            ++count;
+            auto before = std::chrono::high_resolution_clock::now();
+            ans = a.getInterpDer(x,0);
+            auto after = std::chrono::high_resolution_clock::now();
+            auto dt = after - before;
+            interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
+            ++count;
 
-            std::cout << "\nI: " << a.getInterpDer(x,0) << std::endl;
+            std::cout << "\nI1: " << a.getInterpDer(x,0) << std::endl;
+            std::cout << "I2: " << a.getInterpDerFunc(x,0) << std::endl;
             std::cout << "R: " << xRangeI[ii] << std::endl;
         }
     }
-//    interp_time /= count;
-//    std::cout << "interp nanos = " << interp_time.count() << std::endl;
+    interp_time /= count;
+    std::cout << "interp nanos = " << interp_time.count() << std::endl;
 }
 
 
@@ -88,7 +89,7 @@ void testCase1DDer(){
     }
 
     // Create an interpolation object
-    interp a = interp(discretization,evalsPair);
+    Interpolate a = Interpolate(discretization,evalsPair);
 
     vector<double> x;
     vector<double> xRangeI; linspace(xRangeI,0.5123,9.5123,25);
@@ -105,8 +106,9 @@ void testCase1DDer(){
         interp_time += std::chrono::duration_cast<std::chrono::nanoseconds>(dt);
         ++count;
 
-        std::cout << "I: " << a.getInterpDer(x,0) << std::endl;
-        std::cout << "R: " << 2*xRangeI[i] << std::endl;
+        std::cout << "I1: " << a.getInterpDer(x,0) << std::endl;
+        std::cout << "I2: " << a.getInterpDerFunc(x,0) << std::endl;
+        std::cout << "R:  " << 2*xRangeI[i] << std::endl;
     }
     interp_time /= count;
     std::cout << "interp nanos = " << interp_time.count() << std::endl;
