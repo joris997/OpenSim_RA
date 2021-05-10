@@ -156,10 +156,11 @@ class Interpolate{
 
         double getInterp(const std::vector<double>& x);
         double getInterp(const SimTK::State& s);
+        double getLength(const SimTK::State& s){return getInterp(s);}
 
         double getInterpStruct(const std::vector<double>& x);
         double getInterpStruct(const SimTK::State& s);
-        double getLength(const SimTK::State& s){return getInterpStruct(s);}
+        double getLengthStruct(const SimTK::State& s){return getInterpStruct(s);}
 
         double getInterpDer(const std::vector<double>& x, int coordinate, double h=0.0001);
         double getInterpDer(const SimTK::State& s, int coordinate, double h=0.0001);

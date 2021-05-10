@@ -48,7 +48,7 @@ int main(int argc, char **argv){
         if(pbpp != nullptr){
             std::cout << "pa: " << pa.getName() << std::endl;
 
-            OpenSim::FunctionBasedPath fbp(pbpModel,*pbpp,id);
+            OpenSim::FunctionBasedPath fbp(pbpModel,*pbpp);
 
             printFile.open(dirName+"/FBP"+std::to_string(id)+".xml");
             fbp.printContent(printFile);

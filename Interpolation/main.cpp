@@ -16,10 +16,10 @@ using OpenSim::GeometryPath;
 
 int main(){
 //    testCase1D();
-    testCase2D();
+//    testCase2D();
 //    testCase1DDer();
 //    testCase2DDer();
-//    testCase2DOpenSim();
+    testCase2DOpenSim();
 //    testCase3DOpenSim();
 //    testCaseHopper();
     return 0;

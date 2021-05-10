@@ -59,4 +59,5 @@ target_compile_options(common_options_target INTERFACE
 #add_subdirectory(Integration/ForwardTool)
 #add_subdirectory(Interpolation_tool)
 #add_subdirectory(Interpolation_MTU)
-add_subdirectory(Interpolation_CBS/Joris)
+#add_subdirectory(Interpolation_CBS/Joris)
+add_subdirectory(Interpolation_test)

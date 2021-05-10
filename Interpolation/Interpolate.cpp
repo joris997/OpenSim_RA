@@ -101,10 +101,13 @@ Interpolate::Interpolate(OpenSim::GeometryPath const& gp,
         assert(n > 0);
         assert(dimension == (int)n);
 
-        // put all coordinate pointers in a vector to later unpack an incoming
-        // state to a vector of coordinate values
         for (int i=0; i<dimension; i++){
+            // put all coordinate pointers in a vector to later unpack an
+            // incoming state to a vector of coordinate values
             coords.push_back(cBegin[i]);
+            // fill an n-dimensional vector of 4 sized vectors which represent
+            // the polynomial values
+            beta.push_back({0,0,0,0});
         }
 
         // unlock coordinates
@@ -121,10 +124,10 @@ Interpolate::Interpolate(OpenSim::GeometryPath const& gp,
         Discretization dc;
         for (int i=0; i<dimension; i++){
             const OpenSim::Coordinate& c = *cBegin[i];
-            dc.begin = c.getRangeMin();
-            dc.end = c.getRangeMax();
+            dc.begin = std::max(c.getRangeMin(), -static_cast<double>(SimTK_PI));
+            dc.end = std::min(c.getRangeMax(), static_cast<double>(SimTK_PI));
             dc.nPoints = discretizationNPoints[i];
-            dc.gridsize = (dc.end-dc.begin) / dc.nPoints;
+            dc.gridsize = (dc.end-dc.begin) / (dc.nPoints-1);
             std::cout << "dc: " << dc.begin << ", " << dc.end << ", " << dc.nPoints << ", " << dc.gridsize << std::endl;
             dS.push_back(dc);
         }
@@ -169,8 +172,6 @@ Interpolate::Interpolate(OpenSim::GeometryPath const& gp,
         // just make it for using the old getInterp method
         std::vector<double> dc_;
         for (int i=0; i<dimension; i++){
-            beta.push_back({0,0,0,0});
-
             dc_.clear();
             linspace(dc_,dS[i].begin,dS[i].end,dS[i].nPoints);
             discretization.push_back(dc_);
@@ -254,11 +255,10 @@ double Interpolate::getInterp(const std::vector<double> &x){
 
         z += getEval()*Beta;
 
-
-        // from the back to the front, check if we're already at the maximum iteration
-        // on that 'nested' for loop or else increment with 1. In short, everything
-        // starts with [-1,-1,-1,...] and we keep adding ones until the array of the
-        // loops becomes [ 2, 2, 2, ...]
+        // from the back to the front, check if we're already at the maximum
+        // iteration on that 'nested' for loop or else increment with 1.
+        // In short, everything starts with [-1,-1,-1,...] and we keep adding
+        // ones until the array of the loops becomes [ 2, 2, 2, ...]
         for (int x=dimension-1; x>=0; x--){
             if (discrLoopCnt[x] != 2){
                 discrLoopCnt[x] += 1;
@@ -283,7 +283,8 @@ double Interpolate::getInterp(const std::vector<double> &x){
                 break;
             }
         }
-        // if all are true (all are 2) set breakWhile to break on the next iteration
+        // if all are true (all are 2) set breakWhile to break on the next
+        // iteration
         if (allTrue){
             breakWhile = true;
         }

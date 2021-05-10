@@ -68,19 +68,21 @@ void simulateBoth(OpenSim::Model pbpModel, OpenSim::Model* fbpModel){
 
 
 
-void testPerformance(OpenSim::Model pbpModel, OpenSim::Model* fbpModel, bool visualize=false){
+void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool visualize=false){
     // TESTING PERFORMANCE
-    SimTK::State& pbpSt = pbpModel.initSystem();
-    SimTK::State& fbpSt = fbpModel->initSystem();
-
     if (visualize){
         pbpModel.setUseVisualizer(true);
-        fbpModel->setUseVisualizer(true);
+        fbpModel.setUseVisualizer(true);
     }
+
+    SimTK::State& pbpSt = pbpModel.initSystem();
+    SimTK::State& fbpSt = fbpModel.initSystem();
+
     if (visualize){
         pbpModel.updMatterSubsystem().setShowDefaultGeometry(true);
-        fbpModel->updMatterSubsystem().setShowDefaultGeometry(true);
+        fbpModel.updMatterSubsystem().setShowDefaultGeometry(true);
     }
+
 
     std::chrono::milliseconds pbpSimTime{0};
     std::chrono::milliseconds fbpSimTime{0};
@@ -89,22 +91,22 @@ void testPerformance(OpenSim::Model pbpModel, OpenSim::Model* fbpModel, bool vis
     int pbpStepsTaken = 0;
     int fbpStepsTaken= 0;
 
-    int n = 20;
-    double tFinal = 3.5;
-    for (int i=0; i<n; i++){
-        OpenSim::Manager manager(pbpModel);
-        manager.initialize(pbpSt);
-        auto before = std::chrono::high_resolution_clock::now();
-        manager.integrate(tFinal);
-        auto after = std::chrono::high_resolution_clock::now();
-        auto dt = after - before;
-        pbpStepsAttempted += manager.getIntegrator().getNumStepsAttempted();
-        pbpStepsTaken += manager.getIntegrator().getNumStepsTaken();
-        pbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
-    }
+    int n = 10;
+    double tFinal = 3;
+//    for (int i=0; i<n; i++){
+//        OpenSim::Manager manager(pbpModel);
+//        manager.initialize(pbpSt);
+//        auto before = std::chrono::high_resolution_clock::now();
+//        manager.integrate(tFinal);
+//        auto after = std::chrono::high_resolution_clock::now();
+//        auto dt = after - before;
+//        pbpStepsAttempted += manager.getIntegrator().getNumStepsAttempted();
+//        pbpStepsTaken += manager.getIntegrator().getNumStepsTaken();
+//        pbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
+//    }
 
     for (int i=0; i<n; i++){
-        OpenSim::Manager manager(*fbpModel);
+        OpenSim::Manager manager(fbpModel);
         manager.initialize(fbpSt);
         auto before = std::chrono::high_resolution_clock::now();
         manager.integrate(tFinal);
