@@ -19,7 +19,8 @@ int main(){
 //    testCase2D();
 //    testCase1DDer();
 //    testCase2DDer();
-    testCase2DOpenSim();
+    testCase3DDer();
+//    testCase2DOpenSim();
 //    testCase3DOpenSim();
 //    testCaseHopper();
     return 0;

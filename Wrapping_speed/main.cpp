@@ -180,6 +180,8 @@ int test(const testCase& tc) {
 
     SimTK::State& x0 = model.initSystem();
 
+    model.print("buildModel");
+
     // time the simulation
     clock_t ticks = clock();
     simulate(model, x0, tc.FINAL_TIME, true);

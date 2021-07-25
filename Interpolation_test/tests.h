@@ -68,7 +68,7 @@ void simulateBoth(OpenSim::Model pbpModel, OpenSim::Model* fbpModel){
 
 
 
-void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool visualize=false){
+void testPerformance(OpenSim::Model pbpModel, OpenSim::Model fbpModel, bool visualize=false){
     // TESTING PERFORMANCE
     if (visualize){
         pbpModel.setUseVisualizer(true);
@@ -91,23 +91,33 @@ void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool vi
     int pbpStepsTaken = 0;
     int fbpStepsTaken= 0;
 
-    int n = 10;
-    double tFinal = 3;
-//    for (int i=0; i<n; i++){
-//        OpenSim::Manager manager(pbpModel);
-//        manager.initialize(pbpSt);
-//        auto before = std::chrono::high_resolution_clock::now();
-//        manager.integrate(tFinal);
-//        auto after = std::chrono::high_resolution_clock::now();
-//        auto dt = after - before;
-//        pbpStepsAttempted += manager.getIntegrator().getNumStepsAttempted();
-//        pbpStepsTaken += manager.getIntegrator().getNumStepsTaken();
-//        pbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
-//    }
+    int n = 5;
+    double tFinal = 1.0;
+    OpenSim::Storage pbpStates, fbpStates;
+    for (int i=0; i<n; i++){
+        OpenSim::Manager manager(pbpModel);
+        manager.initialize(pbpSt);
+        manager.setWriteToStorage(true);
+        auto before = std::chrono::high_resolution_clock::now();
+        manager.integrate(tFinal);
+        auto after = std::chrono::high_resolution_clock::now();
+        auto dt = after - before;
+        pbpStepsAttempted += manager.getIntegrator().getNumStepsAttempted();
+        pbpStepsTaken += manager.getIntegrator().getNumStepsTaken();
+        pbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
+        std::cout << "pbp " << i << std::endl;
+
+        pbpStates = manager.getStateStorage();
+    }
 
     for (int i=0; i<n; i++){
         OpenSim::Manager manager(fbpModel);
+//        manager.setIntegratorMethod(OpenSim::Manager::IntegratorMethod::ExplicitEuler);
+//        manager.setIntegratorInternalStepLimit(1);
+//        manager.setIntegratorMinimumStepSize(0.001);
+//        manager.setIntegratorMaximumStepSize(0.0001);
         manager.initialize(fbpSt);
+        manager.setWriteToStorage(true);
         auto before = std::chrono::high_resolution_clock::now();
         manager.integrate(tFinal);
         auto after = std::chrono::high_resolution_clock::now();
@@ -115,7 +125,13 @@ void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool vi
         fbpStepsAttempted += manager.getIntegrator().getNumStepsAttempted();
         fbpStepsTaken += manager.getIntegrator().getNumStepsTaken();
         fbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
+        std::cout << "fbp " << i << std::endl;
+
+        fbpStates = manager.getStateStorage();
     }
+    double rms = pbpStates.compareColumnRMS(fbpStates,"/jointset/r_shoulder/r_shoulder_elev/value",0.0);
+    std::cout << "RMS: " << rms << std::endl;
+
     pbpSimTime /= n;
     fbpSimTime /= n;
     pbpStepsAttempted /= n;
@@ -123,6 +139,8 @@ void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool vi
     pbpStepsTaken /= n;
     fbpStepsTaken /= n;
 
+    double pbpTime = (double)pbpSimTime.count();
+    double fbpTime = (double)fbpSimTime.count();
     std::cout << "\navg-time PBP:        " << pbpSimTime.count() << std::endl;
     std::cout << "avg-time FBP:        "   << fbpSimTime.count() << std::endl;
 
@@ -131,4 +149,26 @@ void testPerformance(OpenSim::Model& pbpModel, OpenSim::Model& fbpModel, bool vi
 
     std::cout << "\nsteps taken PBP:     " << pbpStepsTaken << std::endl;
     std::cout << "steps taken FBP:     "   << fbpStepsTaken << std::endl;
+
+    std::cout << "\nwe are " << pbpTime/fbpTime << " times as fast!" << std::endl;
+}
+
+
+void testAccuracy(OpenSim::Model pbpModel, OpenSim::Model fbpModel){
+    SimTK::State& pbpSt = pbpModel.initSystem();
+    SimTK::State& fbpSt = fbpModel.initSystem();
+
+    // get pointbasedpaths of pbpModel
+    for (OpenSim::PointBasedPath const& pbp : pbpModel.getComponentList<OpenSim::PointBasedPath>()){
+        std::cout << "name:   " << pbp.getName() << std::endl;
+        std::cout << "length: " << pbp.getLength(pbpSt) << std::endl;
+//        std::cout << "speed:  " << pbp.getLengtheningSpeed(pbpSt) << std::endl;
+    }
+    // get functionbasedpaths of fbpModel
+    for (OpenSim::FunctionBasedPath const& fbp : fbpModel.getComponentList<OpenSim::FunctionBasedPath>()){
+        std::cout << "name:   " << fbp.getName() << std::endl;
+        std::cout << "length: " << fbp.getLength(fbpSt) << std::endl;
+        std::cout << "speed:  " << fbp.getLengtheningSpeed(fbpSt) << std::endl;
+    }
+
 }

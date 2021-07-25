@@ -56,6 +56,7 @@ Model buildWrappingModel(const testCase& tc) {
                                        sliderOrientation, *bodyRight, Vec3(0), sliderOrientation);
     auto weldGround = new WeldJoint("weldGround", model.getGround(), *bodyGround);
 
+
     // Add the joints to the model.
     model.addJoint(sliderLeft);
     model.addJoint(sliderRight);

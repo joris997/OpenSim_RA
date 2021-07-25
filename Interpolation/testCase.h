@@ -259,7 +259,7 @@ void testCase2DOpenSim(){
     OpenSim::Model model{"/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Arm26/arm26.osim"};
     SimTK::State& st = model.initSystem();
     model.equilibrateMuscles(st);
-    model.realizeVelocity(st);
+    model.realizeAcceleration(st);
 
     // get the muscle
     const Muscle* muscle;
@@ -341,17 +341,17 @@ void testCase2DOpenSim(){
             x.push_back(xRange[i]);
             x.push_back(yRange[ii]);
 
-            getInterp = a.getInterp(x);
-            getInterpStruct = a.getInterpStruct(x);
-            getInterpState = a.getInterpStruct(st);
-            getLength = musc_path.getLength(st);
+//            getInterp = a.getInterp(x);
+//            getInterpStruct = a.getInterpStruct(x);
+            getInterpState = a.getLengtheningSpeed(st);
+            getLength = musc_path.getLengtheningSpeed(st);
 
             if (sqrt(pow(getInterpState - getLength,2)) > 0.01){
                 std::cout << "\nx from sampling grid" << std::endl;
                 printVector(x);
 
-                std::cout << "interp x:        " << getInterp << std::endl;
-                std::cout << "interp structx:  " << getInterpStruct << std::endl;
+//                std::cout << "interp x:        " << getInterp << std::endl;
+//                std::cout << "interp structx:  " << getInterpStruct << std::endl;
                 std::cout << "interp state:    " << getInterpState << std::endl;
                 std::cout << "real:            " << getLength << std::endl;
             }
