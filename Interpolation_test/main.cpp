@@ -21,25 +21,36 @@ struct Discretization final {
 };
 
 int main(int argc, char **argv){
-//    Model pbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Hopper.osim");
-//    FunctionBasedPathConversionTool tool("/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Hopper.osim", "Hopper_FBP.osim");
+    int testCase = 1;
 
-//    std::string absolutePath = "/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Arm26/arm26.osim";
+//    // HOPPER
+//    std::string absolutePath = "/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Hopper.osim";
 //    Model pbpModel(absolutePath);
-//    FunctionBasedPathConversionTool tool(absolutePath, "arm26_FBP");
+//    FunctionBasedPathConversionTool tool(absolutePath, "Hopper_FBP");
 
 //    tool.run();
 
+//    Model fbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Hopper_FBP.osim");
+
+    // RAJAGOPAL
     std::string absolutePath = "/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/RajagopalModel/Rajagopal2015.osim";
     Model pbpModel(absolutePath);
     FunctionBasedPathConversionTool tool(absolutePath, "Rajagopal2015_FBP");
 
     tool.run();
 
-//    Model fbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Hopper_FBP.osim.osim");
-//    Model fbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/arm26_FBP.osim");
     Model fbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/Rajagopal2015_FBP.osim");
 
+//    // ARM26
+//    std::string absolutePath = "/home/none/Documents/cpp/OpenSim/OpenSim_RA/models/Arm26/arm26.osim";
+//    Model pbpModel(absolutePath);
+//    FunctionBasedPathConversionTool tool(absolutePath, "arm26_FBP");
+
+//    tool.run();
+
+//    Model fbpModel("/home/none/Documents/cpp/OpenSim/OpenSim_RA/build/arm26_FBP.osim.osim");
+
+    // TESTS
     pbpModel.initSystem();
     fbpModel.initSystem();
 

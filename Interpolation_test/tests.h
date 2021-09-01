@@ -91,7 +91,7 @@ void testPerformance(OpenSim::Model pbpModel, OpenSim::Model fbpModel, bool visu
     int pbpStepsTaken = 0;
     int fbpStepsTaken= 0;
 
-    int n = 5;
+    int n = 1;
     double tFinal = 1.0;
     OpenSim::Storage pbpStates, fbpStates;
     for (int i=0; i<n; i++){
@@ -107,15 +107,11 @@ void testPerformance(OpenSim::Model pbpModel, OpenSim::Model fbpModel, bool visu
         pbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
         std::cout << "pbp " << i << std::endl;
 
-        pbpStates = manager.getStateStorage();
+        manager.getStateStorage().print("pbpStates.sto");
     }
 
     for (int i=0; i<n; i++){
         OpenSim::Manager manager(fbpModel);
-//        manager.setIntegratorMethod(OpenSim::Manager::IntegratorMethod::ExplicitEuler);
-//        manager.setIntegratorInternalStepLimit(1);
-//        manager.setIntegratorMinimumStepSize(0.001);
-//        manager.setIntegratorMaximumStepSize(0.0001);
         manager.initialize(fbpSt);
         manager.setWriteToStorage(true);
         auto before = std::chrono::high_resolution_clock::now();
@@ -127,10 +123,8 @@ void testPerformance(OpenSim::Model pbpModel, OpenSim::Model fbpModel, bool visu
         fbpSimTime += std::chrono::duration_cast<std::chrono::milliseconds>(dt);
         std::cout << "fbp " << i << std::endl;
 
-        fbpStates = manager.getStateStorage();
+        manager.getStateStorage().print("fbpStates.sto");
     }
-    double rms = pbpStates.compareColumnRMS(fbpStates,"/jointset/r_shoulder/r_shoulder_elev/value",0.0);
-    std::cout << "RMS: " << rms << std::endl;
 
     pbpSimTime /= n;
     fbpSimTime /= n;
